@@ -1,0 +1,20 @@
+---
+# Adapted from official Qt sources
+BasedOnStyle: WebKit
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 100
+AccessModifierOffset: -4
+PointerBindsToType: false
+DerivePointerAlignment: false
+NamespaceIndentation: None
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: false
+  AfterFunction: true
+  AfterStruct: true
+  BeforeElse: false
+  IndentBraces: false
+ForEachMacros: [forever, foreach, Q_FOREACH, BOOST_FOREACH]
