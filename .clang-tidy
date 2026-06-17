@@ -1,3 +1,8 @@
 ---
-Checks: "*"
+Checks: "*,
+  -llvmlibc-*,
+  -fuchsia-default-arguments-calls,
+  -fuchsia-default-arguments-declarations,
+  -hicpp-special-member-functions,
+  -cppcoreguidelines-special-member-functions"
 ...
