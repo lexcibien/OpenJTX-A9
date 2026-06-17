@@ -1,0 +1,13 @@
+MetaInfo {
+    Type {
+        name: "OpenJTX_A9.EventListSimulator"
+        icon: ":/ItemLibrary/images/item-icon16.png"
+
+        Hints {
+            visibleInNavigator: true
+            canBeDroppedInNavigator: true
+            canBeDroppedInFormEditor: false
+            canBeDroppedInView3D: false
+        }
+    }
+}
