@@ -1,14 +1,38 @@
-# C++ objects and libs
+# Prerequisites
+*.d
+
+# Compiled Object files
 *.slo
 *.lo
 *.o
-*.a
-*.la
-*.lai
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Linker files
+*.ilk
+
+# Debugger Files
+*.pdb
+
+# Compiled Dynamic libraries
 *.so
-*.so.*
-*.dll
 *.dylib
+*.dll
+*.so.*
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
 
 # Qt-es
 object_script.*.Release
@@ -27,9 +51,6 @@ qrc_*.cpp
 ui_*.h
 *.qmlc
 *.jsc
-Makefile*
-*build-*
-build/
 *.qm
 *.prl
 *.qmlls.ini
@@ -37,20 +58,40 @@ build/
 # Qt unit tests
 target_wrapper.*
 
-# QtCreator
+# Qt Creator
 *.autosave
-
-# QtCreator Qml
 *.qmlproject.user
 *.qmlproject.user.*
-
-# QtCreator CMake
 CMakeLists.txt.user*
+*creator.user*
+*_qmlcache.qrc
 
-# QtCreator 4.8< compilation database
+# Build directories
+build/
+Build/
+build-*/
+*build-*
+Makefile*
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+install_manifest.txt
 compile_commands.json
 
-# QtCreator local machine specific files for imported projects
-*creator.user*
+# Temporary files
+*.tmp
+*.log
+*.bak
+*.swp
 
-*_qmlcache.qrc
+# vcpkg
+vcpkg_installed/
+
+# debug information files
+*.dwo
+
+# test output & cache
+Testing/
+.cache/
