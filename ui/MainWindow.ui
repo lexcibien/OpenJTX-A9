@@ -568,39 +568,39 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Porta</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="portComboBox"/>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
-              <item>
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>Taxa de Envio</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="baudComboBox"/>
-              </item>
-             </layout>
-            </item>
-           </layout>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Porta</string>
+            </property>
+           </widget>
           </item>
+          <item>
+           <widget class="QComboBox" name="portComboBox"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Taxa de Envio</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="baudComboBox"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
            <widget class="QPushButton" name="connectButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -635,40 +635,40 @@
          </spacer>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <widget class="QLabel" name="connectionText">
+            <property name="text">
+             <string>Não conectado</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
-             <widget class="QLabel" name="connectionText">
+             <widget class="QLabel" name="label_2">
               <property name="text">
-               <string>Não conectado</string>
+               <string>Buffer:</string>
               </property>
              </widget>
             </item>
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_6">
-              <item>
-               <widget class="QLabel" name="label_2">
-                <property name="text">
-                 <string>Buffer:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="bufferChangeText">
-                <property name="text">
-                 <string>600</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
+             <widget class="QLineEdit" name="bufferChangeText">
+              <property name="text">
+               <string>600</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
            <widget class="QPushButton" name="pauseAckButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -718,7 +718,6 @@
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionTeste">
    <property name="text">
     <string>Teste</string>
