@@ -28,8 +28,7 @@ SOFTWARE.
 
 namespace ComboBoxHelper {
 
-template <typename ValueType>
-struct Item
+template <typename ValueType> struct Item
 {
     Item(const QString &text, const ValueType &value)
         : text(text)
@@ -41,8 +40,7 @@ struct Item
 };
 
 template <typename ValueType>
-void setup(QComboBox *cb, ValueType defaultValue, const QVector<Item<ValueType>> &list,
-           const std::function<void(ValueType)> &function = {})
+void setup(QComboBox *cb, ValueType defaultValue, const QVector<Item<ValueType>> &list, const std::function<void(ValueType)> &function = { })
 {
     for (const Item<ValueType> &item : list) {
         cb->addItem(item.text, QVariant::fromValue(item.value));
@@ -60,15 +58,13 @@ void setup(QComboBox *cb, ValueType defaultValue, const QVector<Item<ValueType>>
 }
 
 template <typename ValueType, typename Target, typename Function>
-void setup(QComboBox *cb, ValueType defaultValue, const QVector<Item<ValueType>> &list,
-           Target *target, Function function)
+void setup(QComboBox *cb, ValueType defaultValue, const QVector<Item<ValueType>> &list, Target *target, Function function)
 {
     setup(cb, defaultValue, list);
-    QObject::connect(cb, QOverload<int>::of(&QComboBox::currentIndexChanged),
-                     [function, cb, target] {
-                         const ValueType value = cb->currentData().value<ValueType>();
-                         std::invoke(function, target, value);
-                     });
+    QObject::connect(cb, QOverload<int>::of(&QComboBox::currentIndexChanged), [function, cb, target] {
+        const ValueType value = cb->currentData().value<ValueType>();
+        std::invoke(function, target, value);
+    });
     std::invoke(function, target, defaultValue);
 }
-}
+}  // namespace ComboBoxHelper

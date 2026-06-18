@@ -8,27 +8,44 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    ui->continuityText->setText("Fechado");
-    // const QStringList baudList = { "9600", "19200", "38400", "115200", "230400" };
-
-    // ui->baudComboBox->addItems(baudList);
-    ComboBoxHelper::setup<GoodThings>(ui->baudComboBox, GoodThings::KDABVideos,
-        { { "Angels", GoodThings::Angels }, { "Depeche Mode", GoodThings::DepecheMode }, { "KDAB Videos on YouTube", GoodThings::KDABVideos } }, this, &MainWindow::doGoodThings);
+    createComboBaudRate();
+    connectButtons();
 }
 
 MainWindow::~MainWindow() { delete ui; }
 
-void MainWindow::doGoodThings(MainWindow::GoodThings which) const
+void MainWindow::createComboBaudRate()
+{
+    using enum BaudRateValues;
+    ComboBoxHelper::setup<BaudRateValues>(ui->baudComboBox, BAUD_115200,
+        { { "9600", BAUD_9600 }, { "19200", BAUD_19200 }, { "38400", BAUD_38400 }, { "115200", BAUD_115200 }, { "230400", BAUD_230400 } }, this,
+        &MainWindow::comboBaudRate);
+}
+
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+void MainWindow::comboBaudRate(BaudRateValues which)
 {
     switch (which) {
-        using enum GoodThings;
-    case Angels:
-        qDebug() << "Angels are good assuming they exists.";
+        using enum BaudRateValues;
+    case BAUD_9600:
+        baudRate = std::to_underlying(BAUD_9600);
         break;
-    case DepecheMode:
-        qDebug() << "Enjoy the Silence...";
+    case BAUD_19200:
+        baudRate = std::to_underlying(BAUD_19200);
         break;
-    case KDABVideos:
-        qDebug() << "http://kdab.tv rocks!";
+    case BAUD_38400:
+        baudRate = std::to_underlying(BAUD_38400);
+        break;
+    case BAUD_115200:
+        baudRate = std::to_underlying(BAUD_115200);
+        break;
+    case BAUD_230400:
+        baudRate = std::to_underlying(BAUD_230400);
+        break;
     }
+    qDebug() << "A baud rate é de:" << baudRate;
 }
+
+void MainWindow::connectButtons() const { connect(ui->changeModeButton, &QAbstractButton::clicked, this, &MainWindow::changeText); }
+
+void MainWindow::changeText() { ui->continuityText->setText("Fechado"); }
