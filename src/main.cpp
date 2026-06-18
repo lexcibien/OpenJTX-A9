@@ -21,9 +21,7 @@ int main(int argc, char *argv[])
 
     window.show();
 
-    int fontSize = settings.value("Main/FontSize", 9).toInt();
     QFont sysFont;
-    sysFont.setPointSize(fontSize);
     QApplication::setFont(sysFont);
 
     int retCode = QApplication::exec();
