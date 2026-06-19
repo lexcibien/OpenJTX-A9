@@ -19,7 +19,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Gui Widgets SerialPort)
 
 if(Qt6_VERSION VERSION_LESS ${QT_MIN_VERSION})
-    message(FATAL_ERROR "Qt version ${Qt6_VERSION} found, but ${QT_MIN_VERSION} or higher is required")
+  message(FATAL_ERROR "Qt version ${Qt6_VERSION} found, but ${QT_MIN_VERSION} or higher is required")
 endif()
 
 qt_standard_project_setup()
@@ -29,8 +29,8 @@ file(GLOB_RECURSE SRC_FILES ${SRC_DIR}/*.cpp)
 qt_add_executable(OpenJTX_A9 ${SRC_FILES})
 
 target_link_libraries(OpenJTX_A9 PRIVATE
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Widgets
-    Qt6::SerialPort
+  Qt6::Core
+  Qt6::Gui
+  Qt6::Widgets
+  Qt6::SerialPort
 )
