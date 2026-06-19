@@ -3,7 +3,6 @@
 #include <QSerialPortInfo>
 #include <QSettings>
 #include <QStringBuilder>
-#include <qdebug.h>
 #include <utility>
 
 SerialManager::SerialManager()
