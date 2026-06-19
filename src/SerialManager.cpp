@@ -3,6 +3,7 @@
 #include <QSerialPortInfo>
 #include <QSettings>
 #include <QStringBuilder>
+#include <memory>
 #include <utility>
 
 SerialManager::SerialManager()
@@ -19,7 +20,7 @@ void SerialManager::connectDevice()
 
     /* open new device */
     qDebug() << "Serial connection to a GVRET device";
-    serial = new QSerialPort(QSerialPortInfo("Device"));
+    serial = std::make_unique<QSerialPort>(QSerialPortInfo("Device"));
     if (serial == nullptr) {
         qDebug() << "can't open serial port ";
         return;
@@ -44,7 +45,7 @@ void SerialManager::disconnectDevice()
             serial->close();
         }
         serial->disconnect(); // disconnect all signals
-        delete serial;
+        serial.reset();
         serial = nullptr;
     }
 }
@@ -54,6 +55,9 @@ void SerialManager::listPorts() const
 #pragma unroll 2
     for (const QSerialPortInfo &portInfo : QSerialPortInfo::availablePorts()) {
         if (portInfo.systemLocation().startsWith("/dev/ttyS")) {
+            continue;
+        }
+        if (portInfo.systemLocation().startsWith("/dev/cu.")) {
             continue;
         }
         qDebug() << "Porta USB Encontrada:" << portInfo.systemLocation();

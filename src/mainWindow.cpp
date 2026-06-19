@@ -2,11 +2,12 @@
 #include "ComboBoxHelper.h"
 #include "ui_MainWindow.h"
 #include <QSerialPortInfo>
+#include <memory>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-    , serialWorker(new SerialManager)
+    , ui(std::make_shared<Ui::MainWindow>())
+    , serialWorker(std::make_unique<SerialManager>())
 {
     ui->setupUi(this);
 
@@ -16,14 +17,15 @@ MainWindow::MainWindow(QWidget *parent)
     serialWorker->listPorts();
 }
 
-MainWindow::~MainWindow() { delete ui; }
-
 void MainWindow::createComboPorts()
 {
     QVector<ComboBoxHelper::Item<QString>> portsList;
 
-    for (const QSerialPortInfo &port : QSerialPortInfo::availablePorts()) {
+    for (const QSerialPortInfo &port : QSerialPortInfo::availablePorts()) { //TODO Fazer uma função no SerialManager (reaproveitar listPorts)
         if (port.systemLocation().startsWith("/dev/ttyS")) {
+            continue;
+        }
+        if (port.systemLocation().startsWith("/dev/cu.")) {
             continue;
         }
         qDebug() << port.portName();

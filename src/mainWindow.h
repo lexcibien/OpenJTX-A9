@@ -2,6 +2,7 @@
 
 #include "SerialManager.h"
 #include <QMainWindow>
+#include <memory>
 
 namespace Ui {
 class MainWindow;
@@ -12,9 +13,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
-    Ui::MainWindow *ui;
+    std::shared_ptr<Ui::MainWindow> ui;
+    std::unique_ptr<SerialManager> serialWorker;
 
-    SerialManager *serialWorker;
     void createComboBaudRate();
     void createComboPorts();
 
@@ -26,5 +27,5 @@ private:
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow() override;
+    ~MainWindow() override = default;
 };

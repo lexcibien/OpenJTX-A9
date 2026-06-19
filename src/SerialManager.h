@@ -4,6 +4,7 @@
 #include <QSerialPort>
 #include <QStringView>
 #include <QVariant>
+#include <memory>
 
 enum class BaudRateValues : qint32 { BAUD_9600 = 9600, BAUD_19200 = 19200, BAUD_38400 = 38400, BAUD_115200 = 115200, BAUD_230400 = 230400 };
 
@@ -18,7 +19,7 @@ public:
     void listPorts() const;
 
 private:
-    QSerialPort *serial;
+    std::unique_ptr<QSerialPort> serial;
     qint32 baudRate = 0;
     void disconnectDevice();
     void connectDevice();
