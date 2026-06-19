@@ -4,5 +4,6 @@ Checks: "*,
   -fuchsia-default-arguments-calls,
   -fuchsia-default-arguments-declarations,
   -hicpp-special-member-functions,
+  -modernize-use-trailing-return-type,
   -cppcoreguidelines-special-member-functions"
 ...

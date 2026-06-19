@@ -5,11 +5,13 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , serialWorker(nullptr)
 {
     ui->setupUi(this);
 
     createComboBaudRate();
     connectButtons();
+    serialWorker->listPorts();
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -28,22 +30,22 @@ void MainWindow::comboBaudRate(BaudRateValues which)
     switch (which) {
         using enum BaudRateValues;
     case BAUD_9600:
-        baudRate = std::to_underlying(BAUD_9600);
+        serialWorker->setBaudRate(BAUD_9600);
         break;
     case BAUD_19200:
-        baudRate = std::to_underlying(BAUD_19200);
+        serialWorker->setBaudRate(BAUD_19200);
         break;
     case BAUD_38400:
-        baudRate = std::to_underlying(BAUD_38400);
+        serialWorker->setBaudRate(BAUD_38400);
         break;
     case BAUD_115200:
-        baudRate = std::to_underlying(BAUD_115200);
+        serialWorker->setBaudRate(BAUD_115200);
         break;
     case BAUD_230400:
-        baudRate = std::to_underlying(BAUD_230400);
+        serialWorker->setBaudRate(BAUD_230400);
         break;
     }
-    qDebug() << "A baud rate é de:" << baudRate;
+    qDebug() << "A baud rate é de:" << serialWorker->getBaudRate();
 }
 
 void MainWindow::connectButtons() const { connect(ui->changeModeButton, &QAbstractButton::clicked, this, &MainWindow::changeText); }

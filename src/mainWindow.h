@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SerialManager.h"
 #include <QMainWindow>
 
 namespace Ui {
@@ -13,8 +14,7 @@ class MainWindow : public QMainWindow
 private:
     Ui::MainWindow *ui;
 
-    enum class BaudRateValues : uint { BAUD_9600 = 9600, BAUD_19200 = 19200, BAUD_38400 = 38400, BAUD_115200 = 115200, BAUD_230400 = 230400 };
-    QVariant baudRate = 0;
+    SerialManager *serialWorker;
     void createComboBaudRate();
 
     void connectButtons() const;
