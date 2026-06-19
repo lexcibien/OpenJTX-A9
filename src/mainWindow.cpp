@@ -5,7 +5,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , serialWorker(nullptr)
+    , serialWorker(new SerialManager)
 {
     ui->setupUi(this);
 
