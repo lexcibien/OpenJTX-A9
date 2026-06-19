@@ -52,9 +52,14 @@ void SerialManager::disconnectDevice()
 void SerialManager::listPorts() const
 {
 #pragma unroll 2
-    for (const QSerialPortInfo &portInfor : QSerialPortInfo::availablePorts()) {
-        qDebug() << "Port Name: " << portInfor.portName();
-        qDebug() << "Port Location: " << portInfor.systemLocation();
+    for (const QSerialPortInfo &portInfo : QSerialPortInfo::availablePorts()) {
+        if (portInfo.systemLocation().startsWith("/dev/ttyS")) {
+            continue;
+        }
+        qDebug() << "Porta USB Encontrada:" << portInfo.systemLocation();
+        qDebug() << "Descrição:" << portInfo.description();
+        qDebug() << "Fabricante:" << portInfo.manufacturer();
+        qDebug() << "-----------------------------------------";
     }
 }
 
