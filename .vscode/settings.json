@@ -10,5 +10,8 @@
   },
   "C_Cpp.intelliSenseEngine": "disabled",
   "clangd.enable": true,
+  "clangd.arguments": [
+    "--header-insertion=iwyu"
+  ],
   "sonarlint.pathToCompileCommands": "${workspaceFolder}/compile_commands.json"
 }
