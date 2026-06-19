@@ -16,6 +16,10 @@ private:
 
     SerialManager *serialWorker;
     void createComboBaudRate();
+    void createComboPorts();
+
+    void comboBaudRate(BaudRateValues which);
+    void comboPorts(const QString &portName);
 
     void connectButtons() const;
     void changeText();
@@ -23,6 +27,4 @@ private:
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
-
-    void comboBaudRate(BaudRateValues which);
 };

@@ -1,6 +1,7 @@
 #include "mainWindow.h"
 #include "ComboBoxHelper.h"
 #include "ui_MainWindow.h"
+#include <QSerialPortInfo>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -9,12 +10,34 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    createComboPorts();
     createComboBaudRate();
     connectButtons();
     serialWorker->listPorts();
 }
 
 MainWindow::~MainWindow() { delete ui; }
+
+void MainWindow::createComboPorts()
+{
+    QVector<ComboBoxHelper::Item<QString>> portsList;
+
+    for (const QSerialPortInfo &port : QSerialPortInfo::availablePorts()) {
+        if (port.systemLocation().startsWith("/dev/ttyS")) {
+            continue;
+        }
+        qDebug() << port.portName();
+        portsList.append({ port.portName(), port.systemLocation() });
+    }
+
+    QString defaultPort;
+
+    if (!portsList.isEmpty()) {
+        defaultPort = portsList.first().value;
+    }
+
+    ComboBoxHelper::setup<QString>(ui->portComboBox, defaultPort, portsList, this, &MainWindow::comboPorts);
+}
 
 void MainWindow::createComboBaudRate()
 {
@@ -45,8 +68,9 @@ void MainWindow::comboBaudRate(BaudRateValues which)
         serialWorker->setBaudRate(BAUD_230400);
         break;
     }
-    qDebug() << "A baud rate é de:" << serialWorker->getBaudRate();
 }
+
+void MainWindow::comboPorts(const QString &portName) { qDebug() << "Porta selecionada:" << portName; }
 
 void MainWindow::connectButtons() const { connect(ui->changeModeButton, &QAbstractButton::clicked, this, &MainWindow::changeText); }
 
