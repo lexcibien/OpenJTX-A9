@@ -52,7 +52,6 @@ void SerialManager::disconnectDevice()
 
 void SerialManager::listPorts() const
 {
-#pragma unroll 2
     for (const QSerialPortInfo &portInfo : QSerialPortInfo::availablePorts()) {
         if (portInfo.systemLocation().startsWith("/dev/ttyS")) {
             continue;

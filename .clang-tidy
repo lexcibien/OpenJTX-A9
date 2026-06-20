@@ -5,5 +5,6 @@ Checks: "*,
   -fuchsia-default-arguments-declarations,
   -hicpp-special-member-functions,
   -modernize-use-trailing-return-type,
+  -altera-unroll-loops,
   -cppcoreguidelines-special-member-functions"
 ...
