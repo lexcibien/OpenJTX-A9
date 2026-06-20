@@ -14,31 +14,27 @@ MainWindow::MainWindow(QWidget *parent)
     createComboPorts();
     createComboBaudRate();
     connectButtons();
-    serialWorker->listPorts();
+    SerialManager::listPorts();
 }
 
 void MainWindow::createComboPorts()
 {
-    QVector<ComboBoxHelper::Item<QString>> portsList;
+    QVector<ComboBoxHelper::Item<int>> portsList;
+    availablePorts = SerialManager::getPortsList();
 
-    for (const QSerialPortInfo &port : QSerialPortInfo::availablePorts()) { //TODO Fazer uma função no SerialManager (reaproveitar listPorts)
-        if (port.systemLocation().startsWith("/dev/ttyS")) {
-            continue;
-        }
-        if (port.systemLocation().startsWith("/dev/cu.")) {
-            continue;
-        }
-        qDebug() << port.portName();
-        portsList.append({ port.portName(), port.systemLocation() });
+    int index = 0;
+    for (const QSerialPortInfo &port : availablePorts) {
+        portsList.append({ port.portName(), index });
+        index++;
     }
 
-    QString defaultPort;
+    int defaultPort = 0;
 
     if (!portsList.isEmpty()) {
         defaultPort = portsList.first().value;
     }
 
-    ComboBoxHelper::setup<QString>(ui->portComboBox, defaultPort, portsList, this, &MainWindow::comboPorts);
+    ComboBoxHelper::setup<int>(ui->portComboBox, defaultPort, portsList, this, &MainWindow::comboPorts);
 }
 
 void MainWindow::createComboBaudRate()
@@ -72,8 +68,12 @@ void MainWindow::comboBaudRate(BaudRateValues which)
     }
 }
 
-void MainWindow::comboPorts(const QString &portName) { qDebug() << "Porta selecionada:" << portName; }
+void MainWindow::comboPorts(int index)
+{
+    serialWorker->setPort(availablePorts.at(index));
+    qDebug() << "Porta selecionada:" << serialWorker->getSerialName();
+}
 
-void MainWindow::connectButtons() const { connect(ui->changeModeButton, &QAbstractButton::clicked, this, &MainWindow::changeText); }
+void MainWindow::connectButtons() const { connect(ui->connectButton, &QAbstractButton::clicked, this, &MainWindow::changeText); }
 
-void MainWindow::changeText() { ui->continuityText->setText("Fechado"); }
+void MainWindow::changeText() { serialWorker->connectDevice(); serialWorker->readSerialData(); ui->connectionText->setText("Conectado"); }

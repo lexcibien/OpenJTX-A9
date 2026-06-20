@@ -16,11 +16,13 @@ private:
     std::shared_ptr<Ui::MainWindow> ui;
     std::unique_ptr<SerialManager> serialWorker;
 
+    QList<QSerialPortInfo> availablePorts;
+
     void createComboBaudRate();
     void createComboPorts();
 
     void comboBaudRate(BaudRateValues which);
-    void comboPorts(const QString &portName);
+    void comboPorts(int index);
 
     void connectButtons() const;
     void changeText();

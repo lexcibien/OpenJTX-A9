@@ -16,13 +16,17 @@ public:
     ~SerialManager() override = default;
     void setBaudRate(BaudRateValues baud);
     [[nodiscard]] qint32 getBaudRate() const;
-    void listPorts() const;
+    static void listPorts();
+    static QVector<QSerialPortInfo> getPortsList();
+    [[nodiscard]] QString getSerialName() const;
+    void setPort(const QSerialPortInfo &outPort);
+    void connectDevice();
+    void disconnectDevice();
+    void readSerialData();
+    void sendToSerial(const QByteArray &bytes);
 
 private:
     std::unique_ptr<QSerialPort> serial;
     qint32 baudRate = 0;
-    void disconnectDevice();
-    void connectDevice();
-    void readSerialData();
-    void sendToSerial(const QByteArray &bytes);
+    QSerialPortInfo port;
 };

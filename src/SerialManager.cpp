@@ -20,7 +20,7 @@ void SerialManager::connectDevice()
 
     /* open new device */
     qDebug() << "Serial connection to a GVRET device";
-    serial = std::make_unique<QSerialPort>(QSerialPortInfo("Device"));
+    serial = std::make_unique<QSerialPort>(QSerialPortInfo(port.portName()));
     if (serial == nullptr) {
         qDebug() << "can't open serial port ";
         return;
@@ -50,7 +50,7 @@ void SerialManager::disconnectDevice()
     }
 }
 
-void SerialManager::listPorts() const
+void SerialManager::listPorts()
 {
     for (const QSerialPortInfo &portInfo : QSerialPortInfo::availablePorts()) {
         if (portInfo.systemLocation().startsWith("/dev/ttyS")) {
@@ -64,6 +64,31 @@ void SerialManager::listPorts() const
         qDebug() << "Fabricante:" << portInfo.manufacturer();
         qDebug() << "-----------------------------------------";
     }
+}
+
+QString SerialManager::getSerialName() const { return port.portName(); }
+
+void SerialManager::setPort(const QSerialPortInfo &outPort) { port = outPort; }
+
+QVector<QSerialPortInfo> SerialManager::getPortsList()
+{
+    QVector<QSerialPortInfo> portsList;
+
+    for (const QSerialPortInfo &port : QSerialPortInfo::availablePorts()) {
+        if (port.systemLocation().startsWith("/dev/ttyS")) {
+            continue;
+        }
+        if (port.systemLocation().startsWith("/dev/cu.")) {
+            continue;
+        }
+        qDebug() << "Porta USB Encontrada:" << port.systemLocation();
+        qDebug() << "Descrição:" << port.description();
+        qDebug() << "Fabricante:" << port.manufacturer();
+        qDebug() << "-----------------------------------------";
+
+        portsList.append(port);
+    }
+    return portsList;
 }
 
 void SerialManager::sendToSerial(const QByteArray &bytes)
