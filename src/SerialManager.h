@@ -2,7 +2,9 @@
 
 #include <QObject>
 #include <QSerialPort>
+#include <QSerialPortInfo>
 #include <QStringView>
+#include <QTimer>
 #include <QVariant>
 #include <memory>
 
@@ -29,4 +31,6 @@ private:
     std::unique_ptr<QSerialPort> serial;
     qint32 baudRate = 0;
     QSerialPortInfo port;
+
+    QTimer *timer;
 };

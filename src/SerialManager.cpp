@@ -4,15 +4,15 @@
 #include <QSettings>
 #include <QStringBuilder>
 #include <memory>
-#include <utility>
 
 SerialManager::SerialManager()
-    : serial(nullptr)
+    : serial(nullptr), timer(nullptr)
 {
 }
 
 void SerialManager::connectDevice()
 {
+    timer = new QTimer(this);
     /* disconnect device */
     if (serial != nullptr) {
         disconnectDevice();
@@ -36,6 +36,9 @@ void SerialManager::connectDevice()
     if (!serial->open(QIODevice::ReadWrite)) {
         qDebug() << ("Error returned during port opening: " + serial->errorString());
     }
+
+    connect(timer, &QTimer::timeout, this, &SerialManager::readSerialData);
+    timer->start(17);
 }
 
 void SerialManager::disconnectDevice()
@@ -119,19 +122,14 @@ void SerialManager::sendToSerial(const QByteArray &bytes)
 void SerialManager::readSerialData()
 {
     QByteArray data;
-    unsigned char character = 0;
     QString debugBuild;
 
     if (serial != nullptr) {
-        data = serial->readAll();
+        data = serial->readLine();
     }
 
-    qDebug() << ("Got data from serial. Len = " % QString::number(data.length()));
-    for (int i = 0; i < data.length(); i++) {
-        character = data.at(i);
-        debugBuild = debugBuild % QString::number(character, 16).rightJustified(2, '0') % " ";
-    }
-    qDebug() << debugBuild;
+    QString receivedData = QString::fromUtf8(data).trimmed();
+    qDebug() << receivedData;
 }
 
 void SerialManager::setBaudRate(BaudRateValues baud)
