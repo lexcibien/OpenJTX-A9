@@ -7,5 +7,6 @@ Checks: "*,
   -modernize-use-trailing-return-type,
   -altera-unroll-loops,
   -altera-struct-pack-align,
+  -google-readability-todo,
   -cppcoreguidelines-special-member-functions"
 ...

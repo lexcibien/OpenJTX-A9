@@ -46,7 +46,6 @@ void MainWindow::createComboBaudRate()
         &MainWindow::comboBaudRate);
 }
 
-// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void MainWindow::comboBaudRate(BaudRateValues which)
 {
     switch (which) {

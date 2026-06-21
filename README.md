@@ -1,8 +1,12 @@
 # OpenJTX-A9
 
-Alternative open-source software for multimeter with bluetooth or serial connection
-
+> [!IMPORTANT]
 > OpenJTX-A9 is an independent open-source implementation. This project is not affiliated with, endorsed by, or sponsored by JTXTools. All trademarks belong to their respective owners.
+
+Alternative open-source software in Qt(multi-platform) for multimeter with bluetooth or serial connection
+
+> [!WARNING]
+> This software is currently in active development, expect bugs and not implemented features.
 
 ## JTXTools A9
 

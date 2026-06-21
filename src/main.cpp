@@ -5,7 +5,6 @@
 #include <QSettings>
 #include <QString>
 
-// NOLINTNEXTLINE (modernize-use-trailing-return-type)
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
