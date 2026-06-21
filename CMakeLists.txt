@@ -13,6 +13,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/ui)
 set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -24,9 +25,25 @@ endif()
 
 qt_standard_project_setup()
 
-file(GLOB_RECURSE SRC_FILES ${SRC_DIR}/*.cpp)
+file(GLOB SRC_FILES
+    ${SRC_DIR}/*.cpp
+    ${SRC_DIR}/*.h
+)
 
-qt_add_executable(OpenJTX_A9 ${SRC_FILES})
+file(GLOB QSCALE_FILES
+    ${LIB_DIR}/QScale/*.cpp
+    ${LIB_DIR}/QScale/*.h
+)
+
+qt_add_executable(OpenJTX_A9
+    ${SRC_FILES}
+    ${QSCALE_FILES}
+)
+
+target_include_directories(OpenJTX_A9 PRIVATE
+    ${SRC_DIR}
+    ${LIB_DIR}/QScale
+)
 
 target_link_libraries(OpenJTX_A9 PRIVATE
   Qt6::Core

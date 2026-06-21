@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     createComboPorts();
     createComboBaudRate();
     connectButtons();
+    configureWidgets();
     SerialManager::listPorts();
 }
 
@@ -74,6 +75,14 @@ void MainWindow::comboPorts(int index)
 {
     serialWorker->setPort(availablePorts.at(index));
     qDebug() << "Porta selecionada:" << serialWorker->getSerialName();
+}
+
+void MainWindow::configureWidgets() const
+{
+    ui->voltageGaugeWidget->setRange(0.0, 20.0);
+    ui->voltageGaugeWidget->setMaximumSize(500, 200);
+    ui->currentGaugeWidget->setRange(0.0, 20.0);
+    ui->currentGaugeWidget->setMaximumSize(500, 200);
 }
 
 void MainWindow::connectButtons() const { connect(ui->connectButton, &QAbstractButton::clicked, this, &MainWindow::changeText); }
@@ -163,5 +172,8 @@ void MainWindow::setValuesFromSerial()
 
         qDebug() << "Corrente:" << curveHistoryPage.current;
         qDebug() << "Tensão:" << curveHistoryPage.voltage;
+
+        ui->voltageGaugeWidget->setValue(curveHistoryPage.voltage.toDouble());
+        ui->currentGaugeWidget->setValue(curveHistoryPage.current.toDouble());
     }
 }

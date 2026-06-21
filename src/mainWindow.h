@@ -32,6 +32,7 @@ private:
     void comboBaudRate(BaudRateValues which);
     void comboPorts(int index);
 
+    void configureWidgets() const;
     void connectButtons() const;
     void changeText();
     void setValuesFromSerial();
