@@ -25,37 +25,40 @@
 class QScale : public QWidget
 {
     Q_OBJECT
+    Q_PROPERTY(double value READ value WRITE setValue)
+    Q_PROPERTY(double min READ minimum WRITE setMinimum)
+    Q_PROPERTY(double max READ maximum WRITE setMaximum)
+    Q_PROPERTY(Qt::Orientations orientation READ orientations WRITE setOrientations)
+    Q_PROPERTY(bool scaleVisible READ isScaleVisible WRITE setScaleVisible)
+    Q_PROPERTY(bool labelVisible READ isLabelsVisible WRITE setLabelsVisible)
 
 public:
-    QScale(QWidget *parent = 0);
-    ~QScale();
+    explicit QScale(QWidget *parent = nullptr);
+    ~QScale() override = default;
 
-    double minimum() const;
-    double maximum() const;
+    [[nodiscard]] double minimum() const;
+    [[nodiscard]] double maximum() const;
 
-    double value() const;
+    [[nodiscard]] double value() const;
 
     void setLabelsVisible(bool);
-    bool isLabelsVisible() const;
+    [[nodiscard]] bool isLabelsVisible() const;
 
     void setScaleVisible(bool);
-    bool isScaleVisible() const;
+    [[nodiscard]] bool isScaleVisible() const;
 
     void setBorderWidth(int);
-    int borderWidth() const;
+    [[nodiscard]] int borderWidth() const;
 
     void setLabelsFormat(char format, int precision = -1);
 
-    double majorStepSize() const;
-    int minorStepCount() const;
+    [[nodiscard]] double majorStepSize() const;
+    [[nodiscard]] int minorStepCount() const;
 
     void setInvertedAppearance(bool invert);
-    bool invertedAppearance() const;
+    [[nodiscard]] bool invertedAppearance() const;
 
-    Qt::Orientations orientations() const;
-
-//    QSize sizeHint() const;
-//    QSize minimumSizeHint() const;
+    [[nodiscard]] Qt::Orientations orientations() const;
 
 public Q_SLOTS:
     void setMinimum(double);
@@ -70,9 +73,8 @@ public Q_SLOTS:
     void setOrientations(Qt::Orientations);
 
 protected:
-//    bool event(QEvent *e);
-    void resizeEvent(QResizeEvent *re);
-    void paintEvent(QPaintEvent *pe);
+    void resizeEvent(QResizeEvent *re) override;
+    void paintEvent(QPaintEvent *pe) override;
 
 private:
     double m_minimum;
