@@ -36,9 +36,10 @@ template <typename ValueType> struct Item
         , _value(value)
     {
     }
-    [[nodiscard]] QString text() const {return _text;}
-    ValueType value() {return _value;}
-    private:
+    [[nodiscard]] QString text() const { return _text; }
+    ValueType value() { return _value; }
+
+private:
     QString _text;
     ValueType _value;
 };
@@ -71,4 +72,4 @@ void setup(QComboBox *comboBox, ValueType defaultValue, const QVector<Item<Value
     });
     std::invoke(function, target, defaultValue);
 }
-}  // namespace ComboBoxHelper
+} // namespace ComboBoxHelper
