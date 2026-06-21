@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(std::make_shared<Ui::MainWindow>())
     , serialWorker(std::make_unique<SerialManager>())
+    , timer(nullptr)
 {
     ui->setupUi(this);
 
@@ -76,4 +77,36 @@ void MainWindow::comboPorts(int index)
 
 void MainWindow::connectButtons() const { connect(ui->connectButton, &QAbstractButton::clicked, this, &MainWindow::changeText); }
 
-void MainWindow::changeText() { serialWorker->connectDevice(); serialWorker->readSerialData(); ui->connectionText->setText("Conectado"); }
+void MainWindow::changeText()
+{
+    timer = new QTimer(this);
+    serialWorker->connectDevice();
+    connect(timer, &QTimer::timeout, this, &MainWindow::setValuesFromSerial);
+    timer->start(50);
+    ui->connectionText->setText("Conectado");
+}
+
+void MainWindow::setValuesFromSerial()
+{
+    QString serialData = serialWorker->getSerialData();
+    if (serialData.startsWith("dv")) {
+        voltagePage.voltage = serialData.sliced(3);
+    }
+    if (serialData.startsWith("db")) {
+        chargingUSBPage.current = serialData.sliced(3).section(" ", 0, 0);
+        chargingUSBPage.voltage = serialData.section(" ", 1, 1);
+        chargingUSBPage.power = serialData.section(" ", 2, 2);
+        chargingUSBPage.mAh = serialData.section(" ", 3, 3);
+        chargingUSBPage.mWh = serialData.section(" ", 4, 4);
+        chargingUSBPage.hour = serialData.section(" ", 5, 5);
+    }
+
+    qDebug() << "corrente" << chargingUSBPage.current;
+    qDebug() << "tensão" << chargingUSBPage.voltage;
+    qDebug() << "potência" << chargingUSBPage.power;
+    qDebug() << "mAh" << chargingUSBPage.mAh;
+    qDebug() << "mWh" << chargingUSBPage.mWh;
+    qDebug() << "hora" << chargingUSBPage.hour;
+
+    ui->voltageDisplay->setText(voltagePage.voltage);
+}
