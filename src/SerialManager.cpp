@@ -11,31 +11,29 @@ SerialManager::SerialManager()
 {
 }
 
-void SerialManager::connectDevice()
+void SerialManager::connectDevice() //TODO Add ability to connect via VID and PID
 {
     timer = new QTimer(this);
-    /* disconnect device */
     if (serial != nullptr) {
         disconnectDevice();
     }
 
     /* open new device */
-    qDebug() << "Serial connection to a GVRET device";
+    qDebug() << "Conexão serial com um dispositivo JTXTools A9";
     serial = std::make_unique<QSerialPort>(QSerialPortInfo(port.portName()));
     if (serial == nullptr) {
-        qDebug() << "can't open serial port ";
+        qDebug() << "Não foi possível abrir a porta serial";
         return;
     }
-    qDebug() << "Created Serial Port Object";
+    qDebug() << "Criado um objeto porta serial";
 
     /* configure */
-    serial->setBaudRate(baudRate); // most GVRET devices ignore baud, ESP32 needs it set explicitly to the proper value
+    serial->setBaudRate(baudRate);
     serial->setDataBits(QSerialPort::Data8);
 
-    qDebug() << "Trying Standard Serial Mode";
-    serial->setFlowControl(QSerialPort::HardwareControl); // Most GVRET style devices use hardware flow control
+    serial->setFlowControl(QSerialPort::HardwareControl);
     if (!serial->open(QIODevice::ReadWrite)) {
-        qDebug() << ("Error returned during port opening: " + serial->errorString());
+        qDebug() << ("Erro ao abrir a porta: " + serial->errorString());
     }
 
     connect(timer, &QTimer::timeout, this, &SerialManager::readSerialData);
@@ -106,12 +104,12 @@ QVector<QSerialPortInfo> SerialManager::getPortsList()
 void SerialManager::sendToSerial(const QByteArray &bytes)
 {
     if (serial == nullptr) {
-        qDebug() << "Attempt to write to serial port when it has not been initialized!";
+        qDebug() << "Tentativa de escrever para a porta serial quando não foi inicializada!";
         return;
     }
 
     if ((serial != nullptr) && !serial->isOpen()) {
-        qDebug() << "Attempt to write to serial port when it is not open!";
+        qDebug() << "Tentativa de escrever na porta serial quando não foi aberta!";
         return;
     }
 

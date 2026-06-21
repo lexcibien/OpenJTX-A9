@@ -21,6 +21,8 @@ private:
 
     VoltagePage voltagePage;
     ChargingUSBPage chargingUSBPage;
+    DiodePage diodePage;
+    CurveHistoryPage curveHistoryPage;
 
     QTimer *timer;
 
