@@ -6,7 +6,8 @@
 #include <memory>
 
 SerialManager::SerialManager()
-    : serial(nullptr), timer(nullptr)
+    : serial(nullptr)
+    , timer(nullptr)
 {
 }
 
@@ -73,6 +74,14 @@ QString SerialManager::getSerialName() const { return port.portName(); }
 
 void SerialManager::setPort(const QSerialPortInfo &outPort) { port = outPort; }
 
+void SerialManager::setBaudRate(BaudRateValues baud)
+{
+    baudRate = std::to_underlying(baud);
+    qDebug() << "A baud rate é de:" << baudRate;
+}
+
+qint32 SerialManager::getBaudRate() const { return baudRate; }
+
 QVector<QSerialPortInfo> SerialManager::getPortsList()
 {
     QVector<QSerialPortInfo> portsList;
@@ -128,14 +137,7 @@ void SerialManager::readSerialData()
         data = serial->readLine();
     }
 
-    QString receivedData = QString::fromUtf8(data).trimmed();
-    qDebug() << receivedData;
+    receivedData = QString::fromUtf8(data).trimmed();
 }
 
-void SerialManager::setBaudRate(BaudRateValues baud)
-{
-    baudRate = std::to_underlying(baud);
-    qDebug() << "A baud rate é de:" << baudRate;
-}
-
-qint32 SerialManager::getBaudRate() const { return baudRate; }
+QString SerialManager::getSerialData() const { return receivedData; }

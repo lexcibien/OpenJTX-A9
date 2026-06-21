@@ -25,12 +25,15 @@ public:
     void connectDevice();
     void disconnectDevice();
     void readSerialData();
+    [[nodiscard]] QString getSerialData() const;
     void sendToSerial(const QByteArray &bytes);
 
 private:
     std::unique_ptr<QSerialPort> serial;
     qint32 baudRate = 0;
     QSerialPortInfo port;
+
+    QString receivedData;
 
     QTimer *timer;
 };
