@@ -25,32 +25,36 @@ SOFTWARE.
 #include <QComboBox>
 #include <QObject>
 #include <functional>
+#include <utility>
 
 namespace ComboBoxHelper {
 
 template <typename ValueType> struct Item
 {
-    Item(const QString &text, const ValueType &value)
-        : text(text)
-        , value(value)
+    Item(QString _text, const ValueType &value)
+        : _text(std::move(_text))
+        , _value(value)
     {
     }
-    QString text;
-    ValueType value;
+    [[nodiscard]] QString text() const {return _text;}
+    ValueType value() {return _value;}
+    private:
+    QString _text;
+    ValueType _value;
 };
 
 template <typename ValueType>
-void setup(QComboBox *cb, ValueType defaultValue, const QVector<Item<ValueType>> &list, const std::function<void(ValueType)> &function = { })
+void setup(QComboBox *comboBox, ValueType defaultValue, const QVector<Item<ValueType>> &list, const std::function<void(ValueType)> &function = { })
 {
     for (const Item<ValueType> &item : list) {
-        cb->addItem(item.text, QVariant::fromValue(item.value));
+        comboBox->addItem(item._text, QVariant::fromValue(item.value));
         if (item.value == defaultValue) {
-            cb->setCurrentIndex(cb->count() - 1);
+            comboBox->setCurrentIndex(comboBox->count() - 1);
         }
     }
     if (function) {
-        QObject::connect(cb, QOverload<int>::of(&QComboBox::currentIndexChanged), [function, cb] {
-            const ValueType value = cb->currentData().value<ValueType>();
+        QObject::connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [function, comboBox] {
+            const ValueType value = comboBox->currentData().value<ValueType>();
             function(value);
         });
         function(defaultValue);
@@ -58,11 +62,11 @@ void setup(QComboBox *cb, ValueType defaultValue, const QVector<Item<ValueType>>
 }
 
 template <typename ValueType, typename Target, typename Function>
-void setup(QComboBox *cb, ValueType defaultValue, const QVector<Item<ValueType>> &list, Target *target, Function function)
+void setup(QComboBox *comboBox, ValueType defaultValue, const QVector<Item<ValueType>> &list, Target *target, Function function)
 {
-    setup(cb, defaultValue, list);
-    QObject::connect(cb, QOverload<int>::of(&QComboBox::currentIndexChanged), [function, cb, target] {
-        const ValueType value = cb->currentData().value<ValueType>();
+    setup(comboBox, defaultValue, list);
+    QObject::connect(comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [function, comboBox, target] {
+        const ValueType value = comboBox->currentData().value<ValueType>();
         std::invoke(function, target, value);
     });
     std::invoke(function, target, defaultValue);

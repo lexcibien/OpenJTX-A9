@@ -32,7 +32,7 @@ void MainWindow::createComboPorts()
     int defaultPort = 0;
 
     if (!portsList.isEmpty()) {
-        defaultPort = portsList.first().value;
+        defaultPort = portsList.first().value();
     }
 
     ComboBoxHelper::setup<int>(ui->portComboBox, defaultPort, portsList, this, &MainWindow::comboPorts);
