@@ -6,5 +6,6 @@ Checks: "*,
   -hicpp-special-member-functions,
   -modernize-use-trailing-return-type,
   -altera-unroll-loops,
+  -altera-struct-pack-align,
   -cppcoreguidelines-special-member-functions"
 ...
