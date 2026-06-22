@@ -7,13 +7,11 @@
 
 SerialManager::SerialManager()
     : serial(nullptr)
-    , timer(nullptr)
 {
 }
 
 void SerialManager::connectDevice() //TODO Add ability to connect via VID and PID
 {
-    timer = std::make_unique<QTimer>(this);
     if (serial != nullptr) {
         disconnectDevice();
     }
@@ -31,13 +29,12 @@ void SerialManager::connectDevice() //TODO Add ability to connect via VID and PI
     serial->setBaudRate(baudRate);
     serial->setDataBits(QSerialPort::Data8);
 
-    serial->setFlowControl(QSerialPort::HardwareControl);
+    serial->setFlowControl(QSerialPort::NoFlowControl);
     if (!serial->open(QIODevice::ReadWrite)) {
         qDebug() << ("Erro ao abrir a porta: " + serial->errorString());
     }
 
-    connect(timer.get(), &QTimer::timeout, this, &SerialManager::readSerialData);
-    timer->start(17);
+    connect(serial.get(), &QSerialPort::readyRead, this, &SerialManager::readSerialData);
 }
 
 void SerialManager::disconnectDevice()
@@ -128,14 +125,20 @@ void SerialManager::sendToSerial(const QByteArray &bytes)
 
 void SerialManager::readSerialData()
 {
-    QByteArray data;
-    QString debugBuild;
+    serialBuffer += serial->readAll();
 
-    if (serial != nullptr) {
-        data = serial->readLine();
+    while (serialBuffer.contains('\n'))
+    {
+        qsizetype pos = serialBuffer.indexOf('\n');
+
+        QByteArray line = serialBuffer.left(pos);
+
+        serialBuffer.remove(0, pos + 1);
+
+        receivedData = QString::fromUtf8(line).trimmed();
+
+        emit newData(receivedData);
     }
-
-    receivedData = QString::fromUtf8(data).trimmed();
 }
 
 QString SerialManager::getSerialData() const { return receivedData; }

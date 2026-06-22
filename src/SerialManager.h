@@ -13,6 +13,10 @@ enum class BaudRateValues : qint32 { BAUD_9600 = 9600, BAUD_19200 = 19200, BAUD_
 class SerialManager : public QObject
 {
     Q_OBJECT
+
+signals:
+    void newData(const QString &data);
+
 public:
     explicit SerialManager();
     ~SerialManager() override = default;
@@ -33,7 +37,6 @@ private:
     qint32 baudRate = 0;
     QSerialPortInfo port;
 
+    QByteArray serialBuffer;
     QString receivedData;
-
-    std::unique_ptr<QTimer> timer;
 };

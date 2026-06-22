@@ -18,7 +18,6 @@ MainWindow::MainWindow(QWidget *parent)
     , axisX(new QValueAxis())
     , axisYVoltage(new QValueAxis())
     , axisYCurrent(new QValueAxis())
-    , timer(nullptr)
 {
     ui->setupUi(this);
 
@@ -127,18 +126,19 @@ void MainWindow::connectButtons() const { connect(ui->connectButton, &QAbstractB
 
 void MainWindow::changeText()
 {
-    timer = std::make_unique<QTimer>(this);
     serialWorker->connectDevice();
-    connect(timer.get(), &QTimer::timeout, this, &MainWindow::setValuesFromSerial);
-    timer->start(50);
+    connect(serialWorker.get(), &SerialManager::newData,this, &MainWindow::setValuesFromSerial);
+
     ui->connectionText->setText("Conectado");
 }
 
-void MainWindow::setValuesFromSerial()
+void MainWindow::setValuesFromSerial(const QString &data)
 {
-    QString serialData = serialWorker->getSerialData();
-    if (serialData.startsWith("dv")) {
-        voltagePage.voltage = serialData.sliced(3);
+
+    if (data.startsWith("dv")) {
+        double time = static_cast<double>(graphTimer.elapsed()) / 1000.0;
+
+        voltagePage.voltage = data.sliced(3);
 
         qDebug() << "Tensão:" << voltagePage.voltage;
 
@@ -146,15 +146,15 @@ void MainWindow::setValuesFromSerial()
 
         return;
     }
-    if (serialData.startsWith("zd")) { // TODO Add variables to registry 7-12
-        QString voltage = serialData.sliced(3).section(" ", 0, 0);
+    if (data.startsWith("zd")) { // TODO Add variables to registry 7-12
+        QString voltage = data.sliced(3).section(" ", 0, 0);
         diodePage.voltageTest = voltage.toFloat() < OPEN_VOLTAGE_THRS ? voltage : "Aberto";
-        diodePage.registry_1 = serialData.section(" ", 1, 1);
-        diodePage.registry_2 = serialData.section(" ", 2, 2);
-        diodePage.registry_3 = serialData.section(" ", 3, 3);
-        diodePage.registry_4 = serialData.section(" ", 4, 4);
-        diodePage.registry_5 = serialData.section(" ", 5, 5);
-        diodePage.registry_6 = serialData.section(" ", 6, 6);
+        diodePage.registry_1 = data.section(" ", 1, 1);
+        diodePage.registry_2 = data.section(" ", 2, 2);
+        diodePage.registry_3 = data.section(" ", 3, 3);
+        diodePage.registry_4 = data.section(" ", 4, 4);
+        diodePage.registry_5 = data.section(" ", 5, 5);
+        diodePage.registry_6 = data.section(" ", 6, 6);
 
         qDebug() << "Tensão:" << diodePage.voltageTest;
         qDebug() << "Registro 1:" << diodePage.registry_1;
@@ -180,13 +180,13 @@ void MainWindow::setValuesFromSerial()
 
         return;
     }
-    if (serialData.startsWith("db")) {
-        chargingUSBPage.current = serialData.sliced(3).section(" ", 0, 0);
-        chargingUSBPage.voltage = serialData.section(" ", 1, 1);
-        chargingUSBPage.power = serialData.section(" ", 2, 2);
-        chargingUSBPage.mAh = serialData.section(" ", 3, 3);
-        chargingUSBPage.mWh = serialData.section(" ", 4, 4);
-        chargingUSBPage.hour = serialData.section(" ", 5, 5);
+    if (data.startsWith("db")) {
+        chargingUSBPage.current = data.sliced(3).section(" ", 0, 0);
+        chargingUSBPage.voltage = data.section(" ", 1, 1);
+        chargingUSBPage.power = data.section(" ", 2, 2);
+        chargingUSBPage.mAh = data.section(" ", 3, 3);
+        chargingUSBPage.mWh = data.section(" ", 4, 4);
+        chargingUSBPage.hour = data.section(" ", 5, 5);
 
         qDebug() << "Corrente:" << chargingUSBPage.current;
         qDebug() << "Tensão:" << chargingUSBPage.voltage;
@@ -204,10 +204,10 @@ void MainWindow::setValuesFromSerial()
 
         return;
     }
-    if (serialData.startsWith("qc")) {
+    if (data.startsWith("qc")) {
         double time = static_cast<double>(graphTimer.elapsed()) / 1000.0;
-        curveHistoryPage.current = serialData.sliced(3).section(" ", 0, 0);
-        curveHistoryPage.voltage = serialData.section(" ", 1, 1);
+        curveHistoryPage.current = data.sliced(3).section(" ", 0, 0);
+        curveHistoryPage.voltage = data.section(" ", 1, 1);
 
         qDebug() << "Corrente:" << curveHistoryPage.current;
         qDebug() << "Tensão:" << curveHistoryPage.voltage;

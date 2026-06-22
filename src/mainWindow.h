@@ -35,8 +35,6 @@ private:
     DiodePage diodePage;
     CurveHistoryPage curveHistoryPage;
 
-    std::unique_ptr<QTimer> timer;
-
     QElapsedTimer graphTimer;
 
     void createComboBaudRate();
@@ -48,7 +46,7 @@ private:
     void configureWidgets() const;
     void connectButtons() const;
     void changeText();
-    void setValuesFromSerial();
+    void setValuesFromSerial(const QString &data);
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
