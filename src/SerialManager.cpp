@@ -13,7 +13,7 @@ SerialManager::SerialManager()
 
 void SerialManager::connectDevice() //TODO Add ability to connect via VID and PID
 {
-    timer = new QTimer(this);
+    timer = std::make_unique<QTimer>(this);
     if (serial != nullptr) {
         disconnectDevice();
     }
@@ -36,7 +36,7 @@ void SerialManager::connectDevice() //TODO Add ability to connect via VID and PI
         qDebug() << ("Erro ao abrir a porta: " + serial->errorString());
     }
 
-    connect(timer, &QTimer::timeout, this, &SerialManager::readSerialData);
+    connect(timer.get(), &QTimer::timeout, this, &SerialManager::readSerialData);
     timer->start(17);
 }
 

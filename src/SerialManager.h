@@ -35,5 +35,5 @@ private:
 
     QString receivedData;
 
-    QTimer *timer;
+    std::unique_ptr<QTimer> timer;
 };
