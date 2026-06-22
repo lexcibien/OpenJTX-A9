@@ -4,6 +4,7 @@
 #include "types.h"
 #include <QMainWindow>
 #include <memory>
+#include <QElapsedTimer>
 
 namespace Ui {
 class MainWindow;
@@ -25,6 +26,11 @@ private:
     CurveHistoryPage curveHistoryPage;
 
     QTimer *timer;
+
+    int timeSeconds = 0;
+    QElapsedTimer graphTimer;
+    QVector<double> timeData;
+    QVector<double> voltageData;
 
     void createComboBaudRate();
     void createComboPorts();

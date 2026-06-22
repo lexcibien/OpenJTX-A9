@@ -3,6 +3,7 @@
 #include "ui_MainWindow.h"
 #include <QSerialPortInfo>
 #include <memory>
+#include <qnamespace.h>
 
 const float OPEN_VOLTAGE_THRS = 2.8F;
 
@@ -14,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    graphTimer.start();
     createComboPorts();
     createComboBaudRate();
     connectButtons();
@@ -83,6 +85,38 @@ void MainWindow::configureWidgets() const
     ui->voltageGaugeWidget->setMaximumSize(500, 200);
     ui->currentGaugeWidget->setRange(0.0, 20.0);
     ui->currentGaugeWidget->setMaximumSize(500, 200);
+
+    ui->curveHistoryGraph->addGraph();
+    ui->curveHistoryGraph->graph(0)->setPen(QPen(Qt::blue)); // line color blue for first graph
+    ui->curveHistoryGraph->graph(0)->setBrush(QBrush(QColor(0, 0, 255, 20))); // first graph will be filled with translucent blue
+    ui->curveHistoryGraph->addGraph();
+    ui->curveHistoryGraph->graph(1)->setPen(QPen(Qt::red)); // line color red for second graph
+    // generate some points of data (y0 for first, y1 for second graph):
+
+    ui->curveHistoryGraph->xAxis->setLabel("Tempo (s)");
+    ui->curveHistoryGraph->yAxis->setLabel("Tensão (V)");
+
+    ui->curveHistoryGraph->xAxis->setRange(timeSeconds, 60, Qt::AlignLeft);
+    ui->curveHistoryGraph->yAxis->setRange(0, 20);
+
+    // configure right and top axis to show ticks but no labels:
+    // (see QCPAxisRect::setupFullAxesBox for a quicker method to do this)
+    ui->curveHistoryGraph->xAxis2->setVisible(true);
+    ui->curveHistoryGraph->xAxis2->setTickLabels(false);
+    ui->curveHistoryGraph->yAxis2->setVisible(true);
+    ui->curveHistoryGraph->yAxis2->setTickLabels(false);
+    // make left and bottom axes always transfer their ranges to right and top axes:
+    connect(ui->curveHistoryGraph->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->curveHistoryGraph->xAxis2, SLOT(setRange(QCPRange)));
+    connect(ui->curveHistoryGraph->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->curveHistoryGraph->yAxis2, SLOT(setRange(QCPRange)));
+    // pass data points to graphs:
+
+    // let the ranges scale themselves so graph 0 fits perfectly in the visible area:
+    ui->curveHistoryGraph->graph(0)->rescaleAxes();
+    // same thing for graph 1, but only enlarge ranges (in case graph 1 is smaller than graph 0):
+    ui->curveHistoryGraph->graph(1)->rescaleAxes(true);
+    // Note: we could have also just called ui->curveHistoryGraph->rescaleAxes(); instead
+    // Allow user to drag axis ranges with mouse, zoom with mouse wheel and select graphs by clicking:
+    ui->curveHistoryGraph->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
 }
 
 void MainWindow::connectButtons() const { connect(ui->connectButton, &QAbstractButton::clicked, this, &MainWindow::changeText); }
@@ -167,6 +201,8 @@ void MainWindow::setValuesFromSerial()
         return;
     }
     if (serialData.startsWith("qc")) {
+        constexpr int maxSamples = 500;
+        double time = graphTimer.elapsed() / 1000.0;
         curveHistoryPage.current = serialData.sliced(3).section(" ", 0, 0);
         curveHistoryPage.voltage = serialData.section(" ", 1, 1);
 
@@ -175,5 +211,21 @@ void MainWindow::setValuesFromSerial()
 
         ui->voltageGaugeWidget->setValue(curveHistoryPage.voltage.toDouble());
         ui->currentGaugeWidget->setValue(curveHistoryPage.current.toDouble());
+
+        timeSeconds += 1;
+
+        timeData.push_back(time);
+        voltageData.push_back(curveHistoryPage.voltage.toDouble());
+
+        if (timeData.size() > maxSamples) {
+            timeData.removeFirst();
+            voltageData.removeFirst();
+        }
+
+        ui->curveHistoryGraph->graph(0)->setData(timeData, voltageData);
+
+        ui->curveHistoryGraph->replot();
+
+        return;
     }
 }

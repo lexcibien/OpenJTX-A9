@@ -17,7 +17,7 @@ set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Gui Widgets SerialPort)
+find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Gui Widgets SerialPort Charts)
 
 if(Qt6_VERSION VERSION_LESS ${QT_MIN_VERSION})
   message(FATAL_ERROR "Qt version ${Qt6_VERSION} found, but ${QT_MIN_VERSION} or higher is required")
@@ -30,6 +30,11 @@ file(GLOB SRC_FILES
     ${SRC_DIR}/*.h
 )
 
+file(GLOB QCUSTOMPLOT_FILES
+    ${LIB_DIR}/qcustomplot/*.cpp
+    ${LIB_DIR}/qcustomplot/*.h
+)
+
 file(GLOB QSCALE_FILES
     ${LIB_DIR}/QScale/*.cpp
     ${LIB_DIR}/QScale/*.h
@@ -38,11 +43,13 @@ file(GLOB QSCALE_FILES
 qt_add_executable(OpenJTX_A9
     ${SRC_FILES}
     ${QSCALE_FILES}
+    ${QCUSTOMPLOT_FILES}
 )
 
 target_include_directories(OpenJTX_A9 PRIVATE
     ${SRC_DIR}
     ${LIB_DIR}/QScale
+    ${LIB_DIR}/qcustomplot
 )
 
 target_link_libraries(OpenJTX_A9 PRIVATE
@@ -50,4 +57,5 @@ target_link_libraries(OpenJTX_A9 PRIVATE
   Qt6::Gui
   Qt6::Widgets
   Qt6::SerialPort
+  Qt6::Charts
 )
