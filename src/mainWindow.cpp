@@ -1,5 +1,6 @@
 #include "mainWindow.h"
 #include "ComboBoxHelper.h"
+#include "SerialManager.h"
 #include "ui_MainWindow.h"
 #include <QSerialPortInfo>
 #include <memory>
@@ -12,12 +13,16 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(std::make_shared<Ui::MainWindow>())
     , serialWorker(std::make_unique<SerialManager>())
-    , chart(new QChart())
+    , chartCurvePage(new QChart())
     , voltageSeries(new QLineSeries())
     , currentSeries(new QLineSeries())
-    , axisX(new QValueAxis())
+    , axisXCurveTime(new QValueAxis())
     , axisYVoltage(new QValueAxis())
     , axisYCurrent(new QValueAxis())
+    , chartVoltageGearPage(new QChart())
+    , voltageGearSeries(new QLineSeries())
+    , axisXVoltageGearTime(new QValueAxis())
+    , axisYVoltageGear(new QValueAxis())
 {
     ui->setupUi(this);
 
@@ -92,34 +97,8 @@ void MainWindow::configureWidgets() const
     ui->currentGaugeWidget->setRange(0.0, MAX_A9_READ_CURRENT);
     ui->currentGaugeWidget->setMaximumSize(500, 200);
 
-    voltageSeries->setName("Tensão");
-    currentSeries->setName("Corrente");
-
-    voltageSeries->setColor(Qt::green);
-    currentSeries->setColor(Qt::red);
-
-    chart->addSeries(voltageSeries);
-    chart->addSeries(currentSeries);
-
-    axisX->setTitleText("Tempo (s)");
-    axisYVoltage->setTitleText("Tensão");
-    axisYCurrent->setTitleText("Corrente");
-
-    axisX->setRange(0, 10);
-    axisYVoltage->setRange(0, MAX_A9_READ_VOLTAGE);
-    axisYCurrent->setRange(0, MAX_A9_READ_CURRENT);
-
-    chart->addAxis(axisX, Qt::AlignBottom);
-    chart->addAxis(axisYVoltage, Qt::AlignLeft);
-    chart->addAxis(axisYCurrent, Qt::AlignRight);
-
-    voltageSeries->attachAxis(axisX);
-    voltageSeries->attachAxis(axisYVoltage);
-
-    currentSeries->attachAxis(axisX);
-    currentSeries->attachAxis(axisYCurrent);
-
-    ui->curveHistoryGraph->setChart(chart);
+    configureCurveGraph();
+    configureVoltageGearGraph();
 }
 
 void MainWindow::connectButtons() const { connect(ui->connectButton, &QAbstractButton::clicked, this, &MainWindow::changeText); }
@@ -142,7 +121,15 @@ void MainWindow::setValuesFromSerial(const QString &data)
 
         qDebug() << "Tensão:" << voltagePage.voltage;
 
-        ui->continuityText->setText(voltagePage.voltage);
+        ui->voltageGearDisplay->setText(voltagePage.voltage);
+
+        voltageGearSeries->append(time, voltagePage.voltage.toDouble());
+
+        axisXVoltageGearTime->setRange(std::max(0.0, time - 10.0), time);
+
+        while (!voltageGearSeries->points().isEmpty() && voltageGearSeries->points().front().x() < time - 10.0) {
+            voltageGearSeries->removePoints(0, 1);
+        }
 
         return;
     }
@@ -218,7 +205,7 @@ void MainWindow::setValuesFromSerial(const QString &data)
         voltageSeries->append(time, curveHistoryPage.voltage.toDouble());
         currentSeries->append(time, curveHistoryPage.current.toDouble());
 
-        axisX->setRange(std::max(0.0, time - 10.0), time);
+        axisXCurveTime->setRange(std::max(0.0, time - 10.0), time);
 
         while (!voltageSeries->points().isEmpty() && voltageSeries->points().front().x() < time - 10.0) {
             voltageSeries->removePoints(0, 1);
@@ -230,4 +217,59 @@ void MainWindow::setValuesFromSerial(const QString &data)
 
         return;
     }
+}
+
+void MainWindow::configureCurveGraph() const
+{
+    voltageSeries->setName("Tensão");
+    currentSeries->setName("Corrente");
+
+    voltageSeries->setColor(Qt::green);
+    currentSeries->setColor(Qt::red);
+
+    chartCurvePage->addSeries(voltageSeries);
+    chartCurvePage->addSeries(currentSeries);
+
+    axisXCurveTime->setTitleText("Tempo (s)");
+    axisYVoltage->setTitleText("Tensão (V)");
+    axisYCurrent->setTitleText("Corrente");
+
+    axisXCurveTime->setRange(0, 10);
+    axisYVoltage->setRange(0, MAX_A9_READ_VOLTAGE);
+    axisYCurrent->setRange(0, MAX_A9_READ_CURRENT);
+
+    chartCurvePage->addAxis(axisXCurveTime, Qt::AlignBottom);
+    chartCurvePage->addAxis(axisYVoltage, Qt::AlignLeft);
+    chartCurvePage->addAxis(axisYCurrent, Qt::AlignRight);
+
+    voltageSeries->attachAxis(axisXCurveTime);
+    voltageSeries->attachAxis(axisYVoltage);
+
+    currentSeries->attachAxis(axisXCurveTime);
+    currentSeries->attachAxis(axisYCurrent);
+
+    ui->curveHistoryGraph->setChart(chartCurvePage);
+}
+
+void MainWindow::configureVoltageGearGraph() const
+{
+    voltageGearSeries->setName("Tensão");
+
+    voltageGearSeries->setColor(Qt::green);
+
+    chartVoltageGearPage->addSeries(voltageGearSeries);
+
+    axisXVoltageGearTime->setTitleText("Tempo (s)");
+    axisYVoltageGear->setTitleText("Tensão (V)");
+
+    axisXVoltageGearTime->setRange(0, 10);
+    axisYVoltageGear->setRange(0, MAX_A9_READ_VOLTAGE);
+
+    chartVoltageGearPage->addAxis(axisXVoltageGearTime, Qt::AlignBottom);
+    chartVoltageGearPage->addAxis(axisYVoltageGear, Qt::AlignLeft);
+
+    voltageGearSeries->attachAxis(axisXVoltageGearTime);
+    voltageGearSeries->attachAxis(axisYVoltageGear);
+
+    ui->voltageGearGraph->setChart(chartVoltageGearPage);
 }

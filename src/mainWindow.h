@@ -20,13 +20,19 @@ private:
     std::shared_ptr<Ui::MainWindow> ui;
     std::unique_ptr<SerialManager> serialWorker;
 
-    QChart *chart;
+    QChart *chartCurvePage;
     QLineSeries *voltageSeries;
     QLineSeries *currentSeries;
 
-    QValueAxis* axisX;
+    QValueAxis* axisXCurveTime;
     QValueAxis* axisYVoltage;
     QValueAxis* axisYCurrent;
+
+    QChart *chartVoltageGearPage;
+    QLineSeries *voltageGearSeries;
+
+    QValueAxis* axisXVoltageGearTime;
+    QValueAxis* axisYVoltageGear;
 
     QList<QSerialPortInfo> availablePorts;
 
@@ -44,6 +50,8 @@ private:
     void comboPorts(int index);
 
     void configureWidgets() const;
+    void configureCurveGraph() const;
+    void configureVoltageGearGraph() const;
     void connectButtons() const;
     void changeText();
     void setValuesFromSerial(const QString &data);

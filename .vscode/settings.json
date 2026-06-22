@@ -4,6 +4,7 @@
     "AUTORCC",
     "AUTOUIC",
     "NOLINTNEXTLINE",
+    "qsizetype",
     "SPIWP"
   ],
   "editor.codeActionsOnSave": {

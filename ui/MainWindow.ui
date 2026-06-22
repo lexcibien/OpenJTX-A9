@@ -102,7 +102,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="curveTab">
          <attribute name="title">
@@ -581,21 +581,12 @@
                </widget>
               </item>
               <item>
-               <widget class="QLCDNumber" name="voltageLCD_gear">
-                <property name="smallDecimalPoint">
-                 <bool>false</bool>
-                </property>
-                <property name="digitCount">
-                 <number>5</number>
-                </property>
-                <property name="mode">
-                 <enum>QLCDNumber::Mode::Dec</enum>
-                </property>
-                <property name="segmentStyle">
-                 <enum>QLCDNumber::SegmentStyle::Flat</enum>
-                </property>
-                <property name="value" stdset="0">
-                 <double>0.000000000000000</double>
+               <widget class="QLineEdit" name="voltageGearDisplay">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
                 </property>
                </widget>
               </item>
@@ -615,7 +606,7 @@
              </layout>
             </item>
             <item>
-             <widget class="QWidget" name="widget_5" native="true"/>
+             <widget class="QChartView" name="voltageGearGraph" native="true"/>
             </item>
            </layout>
           </item>
