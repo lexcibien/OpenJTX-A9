@@ -2,9 +2,11 @@
 
 #include "SerialManager.h"
 #include "types.h"
-#include <QMainWindow>
-#include <memory>
 #include <QElapsedTimer>
+#include <QLineSeries>
+#include <QMainWindow>
+#include <QValueAxis>
+#include <memory>
 
 namespace Ui {
 class MainWindow;
@@ -18,6 +20,14 @@ private:
     std::shared_ptr<Ui::MainWindow> ui;
     std::unique_ptr<SerialManager> serialWorker;
 
+    QChart *chart;
+    QLineSeries *voltageSeries;
+    QLineSeries *currentSeries;
+
+    QValueAxis* axisX;
+    QValueAxis* axisYVoltage;
+    QValueAxis* axisYCurrent;
+
     QList<QSerialPortInfo> availablePorts;
 
     VoltagePage voltagePage;
@@ -25,12 +35,9 @@ private:
     DiodePage diodePage;
     CurveHistoryPage curveHistoryPage;
 
-    QTimer *timer;
+    std::unique_ptr<QTimer> timer;
 
-    int timeSeconds = 0;
     QElapsedTimer graphTimer;
-    QVector<double> timeData;
-    QVector<double> voltageData;
 
     void createComboBaudRate();
     void createComboPorts();

@@ -136,7 +136,7 @@
              </layout>
             </item>
             <item>
-             <widget class="QCustomPlot" name="curveHistoryGraph" native="true"/>
+             <widget class="QChartView" name="curveHistoryGraph" native="true"/>
             </item>
            </layout>
           </item>
@@ -1015,9 +1015,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QCustomPlot</class>
+   <class>QChartView</class>
    <extends>QWidget</extends>
-   <header>qcustomplot.h</header>
+   <header>QtCharts/QChartView</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

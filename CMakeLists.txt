@@ -26,30 +26,26 @@ endif()
 qt_standard_project_setup()
 
 file(GLOB SRC_FILES
-    ${SRC_DIR}/*.cpp
-    ${SRC_DIR}/*.h
-)
-
-file(GLOB QCUSTOMPLOT_FILES
-    ${LIB_DIR}/qcustomplot/*.cpp
-    ${LIB_DIR}/qcustomplot/*.h
+  ${SRC_DIR}/*.cpp
+  ${SRC_DIR}/*.h
 )
 
 file(GLOB QSCALE_FILES
-    ${LIB_DIR}/QScale/*.cpp
-    ${LIB_DIR}/QScale/*.h
+  ${LIB_DIR}/QScale/*.cpp
+  ${LIB_DIR}/QScale/*.h
 )
 
 qt_add_executable(OpenJTX_A9
-    ${SRC_FILES}
-    ${QSCALE_FILES}
-    ${QCUSTOMPLOT_FILES}
+  ${SRC_FILES}
+  ${QSCALE_FILES}
 )
 
-target_include_directories(OpenJTX_A9 PRIVATE
-    ${SRC_DIR}
-    ${LIB_DIR}/QScale
-    ${LIB_DIR}/qcustomplot
+target_include_directories(OpenJTX_A9
+  PRIVATE
+  ${SRC_DIR}
+
+  SYSTEM PRIVATE
+  ${LIB_DIR}/QScale
 )
 
 target_link_libraries(OpenJTX_A9 PRIVATE

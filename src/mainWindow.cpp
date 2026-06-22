@@ -3,14 +3,21 @@
 #include "ui_MainWindow.h"
 #include <QSerialPortInfo>
 #include <memory>
-#include <qnamespace.h>
 
 const float OPEN_VOLTAGE_THRS = 2.8F;
+const float MAX_A9_READ_VOLTAGE = 20.0;
+const float MAX_A9_READ_CURRENT = 2.5;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(std::make_shared<Ui::MainWindow>())
     , serialWorker(std::make_unique<SerialManager>())
+    , chart(new QChart())
+    , voltageSeries(new QLineSeries())
+    , currentSeries(new QLineSeries())
+    , axisX(new QValueAxis())
+    , axisYVoltage(new QValueAxis())
+    , axisYCurrent(new QValueAxis())
     , timer(nullptr)
 {
     ui->setupUi(this);
@@ -81,51 +88,48 @@ void MainWindow::comboPorts(int index)
 
 void MainWindow::configureWidgets() const
 {
-    ui->voltageGaugeWidget->setRange(0.0, 20.0);
+    ui->voltageGaugeWidget->setRange(0.0, MAX_A9_READ_VOLTAGE);
     ui->voltageGaugeWidget->setMaximumSize(500, 200);
-    ui->currentGaugeWidget->setRange(0.0, 20.0);
+    ui->currentGaugeWidget->setRange(0.0, MAX_A9_READ_CURRENT);
     ui->currentGaugeWidget->setMaximumSize(500, 200);
 
-    ui->curveHistoryGraph->addGraph();
-    ui->curveHistoryGraph->graph(0)->setPen(QPen(Qt::blue)); // line color blue for first graph
-    ui->curveHistoryGraph->graph(0)->setBrush(QBrush(QColor(0, 0, 255, 20))); // first graph will be filled with translucent blue
-    ui->curveHistoryGraph->addGraph();
-    ui->curveHistoryGraph->graph(1)->setPen(QPen(Qt::red)); // line color red for second graph
-    // generate some points of data (y0 for first, y1 for second graph):
+    voltageSeries->setName("Tensão");
+    currentSeries->setName("Corrente");
 
-    ui->curveHistoryGraph->xAxis->setLabel("Tempo (s)");
-    ui->curveHistoryGraph->yAxis->setLabel("Tensão (V)");
+    voltageSeries->setColor(Qt::green);
+    currentSeries->setColor(Qt::red);
 
-    ui->curveHistoryGraph->xAxis->setRange(timeSeconds, 60, Qt::AlignLeft);
-    ui->curveHistoryGraph->yAxis->setRange(0, 20);
+    chart->addSeries(voltageSeries);
+    chart->addSeries(currentSeries);
 
-    // configure right and top axis to show ticks but no labels:
-    // (see QCPAxisRect::setupFullAxesBox for a quicker method to do this)
-    ui->curveHistoryGraph->xAxis2->setVisible(true);
-    ui->curveHistoryGraph->xAxis2->setTickLabels(false);
-    ui->curveHistoryGraph->yAxis2->setVisible(true);
-    ui->curveHistoryGraph->yAxis2->setTickLabels(false);
-    // make left and bottom axes always transfer their ranges to right and top axes:
-    connect(ui->curveHistoryGraph->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->curveHistoryGraph->xAxis2, SLOT(setRange(QCPRange)));
-    connect(ui->curveHistoryGraph->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->curveHistoryGraph->yAxis2, SLOT(setRange(QCPRange)));
-    // pass data points to graphs:
+    axisX->setTitleText("Tempo (s)");
+    axisYVoltage->setTitleText("Tensão");
+    axisYCurrent->setTitleText("Corrente");
 
-    // let the ranges scale themselves so graph 0 fits perfectly in the visible area:
-    ui->curveHistoryGraph->graph(0)->rescaleAxes();
-    // same thing for graph 1, but only enlarge ranges (in case graph 1 is smaller than graph 0):
-    ui->curveHistoryGraph->graph(1)->rescaleAxes(true);
-    // Note: we could have also just called ui->curveHistoryGraph->rescaleAxes(); instead
-    // Allow user to drag axis ranges with mouse, zoom with mouse wheel and select graphs by clicking:
-    ui->curveHistoryGraph->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+    axisX->setRange(0, 10);
+    axisYVoltage->setRange(0, MAX_A9_READ_VOLTAGE);
+    axisYCurrent->setRange(0, MAX_A9_READ_CURRENT);
+
+    chart->addAxis(axisX, Qt::AlignBottom);
+    chart->addAxis(axisYVoltage, Qt::AlignLeft);
+    chart->addAxis(axisYCurrent, Qt::AlignRight);
+
+    voltageSeries->attachAxis(axisX);
+    voltageSeries->attachAxis(axisYVoltage);
+
+    currentSeries->attachAxis(axisX);
+    currentSeries->attachAxis(axisYCurrent);
+
+    ui->curveHistoryGraph->setChart(chart);
 }
 
 void MainWindow::connectButtons() const { connect(ui->connectButton, &QAbstractButton::clicked, this, &MainWindow::changeText); }
 
 void MainWindow::changeText()
 {
-    timer = new QTimer(this);
+    timer = std::make_unique<QTimer>(this);
     serialWorker->connectDevice();
-    connect(timer, &QTimer::timeout, this, &MainWindow::setValuesFromSerial);
+    connect(timer.get(), &QTimer::timeout, this, &MainWindow::setValuesFromSerial);
     timer->start(50);
     ui->connectionText->setText("Conectado");
 }
@@ -201,8 +205,7 @@ void MainWindow::setValuesFromSerial()
         return;
     }
     if (serialData.startsWith("qc")) {
-        constexpr int maxSamples = 500;
-        double time = graphTimer.elapsed() / 1000.0;
+        double time = static_cast<double>(graphTimer.elapsed()) / 1000.0;
         curveHistoryPage.current = serialData.sliced(3).section(" ", 0, 0);
         curveHistoryPage.voltage = serialData.section(" ", 1, 1);
 
@@ -212,19 +215,18 @@ void MainWindow::setValuesFromSerial()
         ui->voltageGaugeWidget->setValue(curveHistoryPage.voltage.toDouble());
         ui->currentGaugeWidget->setValue(curveHistoryPage.current.toDouble());
 
-        timeSeconds += 1;
+        voltageSeries->append(time, curveHistoryPage.voltage.toDouble());
+        currentSeries->append(time, curveHistoryPage.current.toDouble());
 
-        timeData.push_back(time);
-        voltageData.push_back(curveHistoryPage.voltage.toDouble());
+        axisX->setRange(std::max(0.0, time - 10.0), time);
 
-        if (timeData.size() > maxSamples) {
-            timeData.removeFirst();
-            voltageData.removeFirst();
+        while (!voltageSeries->points().isEmpty() && voltageSeries->points().front().x() < time - 10.0) {
+            voltageSeries->removePoints(0, 1);
         }
 
-        ui->curveHistoryGraph->graph(0)->setData(timeData, voltageData);
-
-        ui->curveHistoryGraph->replot();
+        while (!currentSeries->points().isEmpty() && currentSeries->points().front().x() < time - 10.0) {
+            currentSeries->removePoints(0, 1);
+        }
 
         return;
     }
