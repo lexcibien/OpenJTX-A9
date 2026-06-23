@@ -12,6 +12,7 @@ constexpr float MAX_A9_READ_VOLTAGE = 20.0;
 constexpr float MAX_A9_READ_CURRENT = 2.5;
 constexpr float RANGE_TIME_VOLTAGE_GEAR = 20.0;
 constexpr float RANGE_TIME_CURVE = 10.0;
+constexpr double MS_TO_SECONDS = 1000.0;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -119,7 +120,7 @@ void MainWindow::setValuesFromSerial(const QString &data)
 {
 
     if (data.startsWith("dv")) {
-        double time = static_cast<double>(graphTimer.elapsed()) / 1000.0;
+        double time = static_cast<double>(graphTimer.elapsed()) / MS_TO_SECONDS;
 
         voltagePage.voltage = data.sliced(3);
 
@@ -199,8 +200,6 @@ void MainWindow::setValuesFromSerial(const QString &data)
         return;
     }
     if (data.startsWith("qc")) {
-        constexpr double MS_TO_SECONDS = 1000.0;
-
         curveHistoryPage.current = data.sliced(3).section(" ", CurveHistoryPage::CURRENT, CurveHistoryPage::CURRENT);
         curveHistoryPage.voltage = data.section(" ", CurveHistoryPage::VOLTAGE, CurveHistoryPage::VOLTAGE);
 
