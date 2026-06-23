@@ -98,9 +98,7 @@ void MainWindow::comboPorts(int index)
 void MainWindow::configureWidgets() const
 {
     ui->voltageGaugeWidget->setRange(0.0, MAX_A9_READ_VOLTAGE);
-    ui->voltageGaugeWidget->setMaximumSize(500, 200);
     ui->currentGaugeWidget->setRange(0.0, MAX_A9_READ_CURRENT);
-    ui->currentGaugeWidget->setMaximumSize(500, 200);
 
     configureCurveGraph();
     configureVoltageGearGraph();
