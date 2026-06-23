@@ -52,6 +52,7 @@ private:
     void configureWidgets() const;
     void configureCurveGraph() const;
     void configureVoltageGearGraph() const;
+    static void setAxisRange(const QLineSeries* series, QValueAxis* axis);
     void connectButtons() const;
     void changeText();
     void setValuesFromSerial(const QString &data);
