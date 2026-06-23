@@ -127,6 +127,14 @@ void MainWindow::setValuesFromSerial(const QString &data)
 
         axisXVoltageGearTime->setRange(std::max(0.0, time - 10.0), time);
 
+        // set the y range based on max value
+        // TODO Do a function of this
+        if (QList<QPointF> pontos = voltageGearSeries->points(); !pontos.isEmpty()) {
+            auto maxPonto = std::ranges::max_element(pontos, [](const QPointF &point1, const QPointF &point2) { return point1.y() < point2.y(); });
+            qreal maxValorReal = maxPonto->y();
+            axisYVoltageGear->setRange(0, static_cast<int>(maxValorReal + 1));
+        }
+
         while (!voltageGearSeries->points().isEmpty() && voltageGearSeries->points().front().x() < time - 10.0) {
             voltageGearSeries->removePoints(0, 1);
         }
