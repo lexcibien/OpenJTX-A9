@@ -5,9 +5,11 @@
 #include <QSerialPortInfo>
 #include <memory>
 
-const float OPEN_VOLTAGE_THRS = 2.8F;
-const float MAX_A9_READ_VOLTAGE = 20.0;
-const float MAX_A9_READ_CURRENT = 2.5;
+constexpr float OPEN_VOLTAGE_THRS = 2.8F;
+constexpr float MAX_A9_READ_VOLTAGE = 20.0;
+constexpr float MAX_A9_READ_CURRENT = 2.5;
+constexpr float RANGE_TIME_VOLTAGE_GEAR = 20.0;
+constexpr float RANGE_TIME_CURVE = 10.0;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -106,7 +108,7 @@ void MainWindow::connectButtons() const { connect(ui->connectButton, &QAbstractB
 void MainWindow::changeText()
 {
     serialWorker->connectDevice();
-    connect(serialWorker.get(), &SerialManager::newData,this, &MainWindow::setValuesFromSerial);
+    connect(serialWorker.get(), &SerialManager::newData, this, &MainWindow::setValuesFromSerial);
 
     ui->connectionText->setText("Conectado");
 }
@@ -125,7 +127,7 @@ void MainWindow::setValuesFromSerial(const QString &data)
 
         voltageGearSeries->append(time, voltagePage.voltage.toDouble());
 
-        axisXVoltageGearTime->setRange(std::max(0.0, time - 10.0), time);
+        axisXVoltageGearTime->setRange(std::max(0.0, time - RANGE_TIME_CURVE), time);
 
         // set the y range based on max value
         // TODO Do a function of this
@@ -135,7 +137,7 @@ void MainWindow::setValuesFromSerial(const QString &data)
             axisYVoltageGear->setRange(0, static_cast<int>(maxValorReal + 1));
         }
 
-        while (!voltageGearSeries->points().isEmpty() && voltageGearSeries->points().front().x() < time - 10.0) {
+        while (!voltageGearSeries->points().isEmpty() && voltageGearSeries->points().front().x() < time - RANGE_TIME_CURVE) {
             voltageGearSeries->removePoints(0, 1);
         }
 
@@ -213,13 +215,13 @@ void MainWindow::setValuesFromSerial(const QString &data)
         voltageSeries->append(time, curveHistoryPage.voltage.toDouble());
         currentSeries->append(time, curveHistoryPage.current.toDouble());
 
-        axisXCurveTime->setRange(std::max(0.0, time - 10.0), time);
+        axisXCurveTime->setRange(std::max(0.0, time - RANGE_TIME_CURVE), time);
 
-        while (!voltageSeries->points().isEmpty() && voltageSeries->points().front().x() < time - 10.0) {
+        while (!voltageSeries->points().isEmpty() && voltageSeries->points().front().x() < time - RANGE_TIME_CURVE) {
             voltageSeries->removePoints(0, 1);
         }
 
-        while (!currentSeries->points().isEmpty() && currentSeries->points().front().x() < time - 10.0) {
+        while (!currentSeries->points().isEmpty() && currentSeries->points().front().x() < time - RANGE_TIME_CURVE) {
             currentSeries->removePoints(0, 1);
         }
 
@@ -242,7 +244,7 @@ void MainWindow::configureCurveGraph() const
     axisYVoltage->setTitleText("Tensão (V)");
     axisYCurrent->setTitleText("Corrente");
 
-    axisXCurveTime->setRange(0, 10);
+    axisXCurveTime->setRange(0, RANGE_TIME_CURVE);
     axisYVoltage->setRange(0, MAX_A9_READ_VOLTAGE);
     axisYCurrent->setRange(0, MAX_A9_READ_CURRENT);
 
@@ -270,8 +272,8 @@ void MainWindow::configureVoltageGearGraph() const
     axisXVoltageGearTime->setTitleText("Tempo (s)");
     axisYVoltageGear->setTitleText("Tensão (V)");
 
-    axisXVoltageGearTime->setRange(0, 10);
-    axisYVoltageGear->setRange(0, MAX_A9_READ_VOLTAGE);
+    axisXVoltageGearTime->setRange(0, RANGE_TIME_VOLTAGE_GEAR);
+    axisYVoltageGear->setRange(0, 1.0);
 
     chartVoltageGearPage->addAxis(axisXVoltageGearTime, Qt::AlignBottom);
     chartVoltageGearPage->addAxis(axisYVoltageGear, Qt::AlignLeft);
