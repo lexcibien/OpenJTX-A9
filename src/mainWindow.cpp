@@ -1,8 +1,10 @@
 #include "mainWindow.h"
 #include "ComboBoxHelper.h"
 #include "SerialManager.h"
+#include "types.h"
 #include "ui_MainWindow.h"
 #include <QSerialPortInfo>
+#include <algorithm>
 #include <memory>
 
 constexpr float OPEN_VOLTAGE_THRS = 2.8F;
@@ -143,15 +145,15 @@ void MainWindow::setValuesFromSerial(const QString &data)
 
         return;
     }
-    if (data.startsWith("zd")) { // TODO Add variables to registry 7-12
-        QString voltage = data.sliced(3).section(" ", 0, 0);
+    if (data.startsWith("zd")) { // TODO Add variables to registry 7-12 (maybe a list)
+        QString voltage = data.sliced(3).section(" ", DiodePage::VOLTAGE_TEST, DiodePage::VOLTAGE_TEST);
         diodePage.voltageTest = voltage.toFloat() < OPEN_VOLTAGE_THRS ? voltage : "Aberto";
-        diodePage.registry_1 = data.section(" ", 1, 1);
-        diodePage.registry_2 = data.section(" ", 2, 2);
-        diodePage.registry_3 = data.section(" ", 3, 3);
-        diodePage.registry_4 = data.section(" ", 4, 4);
-        diodePage.registry_5 = data.section(" ", 5, 5);
-        diodePage.registry_6 = data.section(" ", 6, 6);
+        diodePage.registry_1 = data.section(" ", DiodePage::REGISTRY_1, DiodePage::REGISTRY_1);
+        diodePage.registry_2 = data.section(" ", DiodePage::REGISTRY_2, DiodePage::REGISTRY_2);
+        diodePage.registry_3 = data.section(" ", DiodePage::REGISTRY_3, DiodePage::REGISTRY_3);
+        diodePage.registry_4 = data.section(" ", DiodePage::REGISTRY_4, DiodePage::REGISTRY_4);
+        diodePage.registry_5 = data.section(" ", DiodePage::REGISTRY_5, DiodePage::REGISTRY_5);
+        diodePage.registry_6 = data.section(" ", DiodePage::REGISTRY_6, DiodePage::REGISTRY_6);
 
         qDebug() << "Tensão:" << diodePage.voltageTest;
         qDebug() << "Registro 1:" << diodePage.registry_1;
@@ -178,12 +180,12 @@ void MainWindow::setValuesFromSerial(const QString &data)
         return;
     }
     if (data.startsWith("db")) {
-        chargingUSBPage.current = data.sliced(3).section(" ", 0, 0);
-        chargingUSBPage.voltage = data.section(" ", 1, 1);
-        chargingUSBPage.power = data.section(" ", 2, 2);
-        chargingUSBPage.mAh = data.section(" ", 3, 3);
-        chargingUSBPage.mWh = data.section(" ", 4, 4);
-        chargingUSBPage.hour = data.section(" ", 5, 5);
+        chargingUSBPage.current = data.sliced(3).section(" ", ChargingUSBPage::CURRENT, ChargingUSBPage::CURRENT);
+        chargingUSBPage.voltage = data.section(" ", ChargingUSBPage::VOLTAGE, ChargingUSBPage::VOLTAGE);
+        chargingUSBPage.power = data.section(" ", ChargingUSBPage::POWER, ChargingUSBPage::POWER);
+        chargingUSBPage.mAh = data.section(" ", ChargingUSBPage::MAH, ChargingUSBPage::MAH);
+        chargingUSBPage.mWh = data.section(" ", ChargingUSBPage::MWH, ChargingUSBPage::MWH);
+        chargingUSBPage.hour = data.section(" ", ChargingUSBPage::HOUR, ChargingUSBPage::HOUR);
 
         qDebug() << "Corrente:" << chargingUSBPage.current;
         qDebug() << "Tensão:" << chargingUSBPage.voltage;
@@ -202,15 +204,18 @@ void MainWindow::setValuesFromSerial(const QString &data)
         return;
     }
     if (data.startsWith("qc")) {
-        double time = static_cast<double>(graphTimer.elapsed()) / 1000.0;
-        curveHistoryPage.current = data.sliced(3).section(" ", 0, 0);
-        curveHistoryPage.voltage = data.section(" ", 1, 1);
+        constexpr double MS_TO_SECONDS = 1000.0;
+
+        curveHistoryPage.current = data.sliced(3).section(" ", CurveHistoryPage::CURRENT, CurveHistoryPage::CURRENT);
+        curveHistoryPage.voltage = data.section(" ", CurveHistoryPage::VOLTAGE, CurveHistoryPage::VOLTAGE);
 
         qDebug() << "Corrente:" << curveHistoryPage.current;
         qDebug() << "Tensão:" << curveHistoryPage.voltage;
 
         ui->voltageGaugeWidget->setValue(curveHistoryPage.voltage.toDouble());
         ui->currentGaugeWidget->setValue(curveHistoryPage.current.toDouble());
+
+        double time = static_cast<double>(graphTimer.elapsed()) / MS_TO_SECONDS;
 
         voltageSeries->append(time, curveHistoryPage.voltage.toDouble());
         currentSeries->append(time, curveHistoryPage.current.toDouble());

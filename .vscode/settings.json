@@ -4,6 +4,8 @@
     "AUTORCC",
     "AUTOUIC",
     "NOLINTNEXTLINE",
+    "qreal",
+    "QSCALE",
     "qsizetype",
     "SPIWP"
   ],
