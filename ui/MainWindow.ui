@@ -106,7 +106,7 @@
         </property>
         <widget class="QWidget" name="curveTab">
          <attribute name="title">
-          <string>Curva</string>
+          <string>Histórico Curva</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
@@ -144,7 +144,7 @@
         </widget>
         <widget class="QWidget" name="diodeValueTab">
          <attribute name="title">
-          <string>Valor Diodo</string>
+          <string>Continuidade Diodo</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="0">
@@ -586,7 +586,7 @@
         </widget>
         <widget class="QWidget" name="gearVoltageTab">
          <attribute name="title">
-          <string>Engrenagem Tensão</string>
+          <string>Tensão</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="0">
@@ -653,7 +653,7 @@
         </widget>
         <widget class="QWidget" name="chargingPowerTab">
          <attribute name="title">
-          <string>Potência carregador</string>
+          <string>Potência Carregador USB</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
