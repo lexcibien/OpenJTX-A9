@@ -168,6 +168,10 @@ void MainWindow::setValuesFromSerial(const QString &data)
         qDebug() << "Registro 5:" << diodePage.registry_5;
         qDebug() << "Registro 6:" << diodePage.registry_6;
 
+        if (diodePage.registry_6 != registry.at(0)) {
+            registry.push_front(diodePage.registry_6);
+        }
+
         ui->continuityText->setText(diodePage.voltageTest);
         ui->reg1Display->setText(diodePage.registry_1);
         ui->reg2Display->setText(diodePage.registry_2);
@@ -175,12 +179,12 @@ void MainWindow::setValuesFromSerial(const QString &data)
         ui->reg4Display->setText(diodePage.registry_4);
         ui->reg5Display->setText(diodePage.registry_5);
         ui->reg6Display->setText(diodePage.registry_6);
-        ui->reg7Display->setText(diodePage.registry_1);
-        ui->reg8Display->setText(diodePage.registry_2);
-        ui->reg9Display->setText(diodePage.registry_3);
-        ui->reg10Display->setText(diodePage.registry_4);
-        ui->reg11Display->setText(diodePage.registry_5);
-        ui->reg12Display->setText(diodePage.registry_6);
+        ui->reg7Display->setText(registry.at(0));
+        ui->reg8Display->setText(registry.at(1));
+        ui->reg9Display->setText(registry.at(2));
+        ui->reg10Display->setText(registry.at(3));
+        ui->reg11Display->setText(registry.at(4));
+        ui->reg12Display->setText(registry.at(5));
 
         return;
     }

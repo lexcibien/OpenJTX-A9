@@ -36,6 +36,8 @@ private:
 
     QList<QSerialPortInfo> availablePorts;
 
+    QList<QString> registry = { "0.0000", "0.0000", "0.0000", "0.0000", "0.0000", "0.0000" };
+
     VoltagePage voltagePage;
     ChargingUSBPage chargingUSBPage;
     DiodePage diodePage;
