@@ -6,12 +6,12 @@ struct DiodePage
 {
     enum Position : uint8_t {
         VOLTAGE_TEST,
-        REGISTRY_1,
-        REGISTRY_2,
-        REGISTRY_3,
-        REGISTRY_4,
-        REGISTRY_5,
         REGISTRY_6,
+        REGISTRY_5,
+        REGISTRY_4,
+        REGISTRY_3,
+        REGISTRY_2,
+        REGISTRY_1,
     };
     QString pageName = "zd";
     QString voltageTest = "0.0000";

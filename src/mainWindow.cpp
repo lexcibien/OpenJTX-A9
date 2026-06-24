@@ -120,7 +120,7 @@ void MainWindow::changeText()
     serialWorker->connectDevice();
     connect(serialWorker.get(), &SerialManager::newData, this, &MainWindow::setValuesFromSerial);
 
-    //TODO make it receive from emit status
+    // TODO make it receive from emit status
     ui->connectionText->setText("Conectado");
 }
 
@@ -149,15 +149,16 @@ void MainWindow::setValuesFromSerial(const QString &data)
 
         return;
     }
-    if (data.startsWith("zd")) { // TODO Add variables to registry 7-12 (maybe a list)
-        QString voltage = data.sliced(3).section(" ", DiodePage::VOLTAGE_TEST, DiodePage::VOLTAGE_TEST);
+    if (data.startsWith("zd")) {
+        using enum DiodePage::Position;
+        QString voltage = data.sliced(3).section(" ", VOLTAGE_TEST, VOLTAGE_TEST);
         diodePage.voltageTest = voltage.toFloat() < OPEN_VOLTAGE_THRS ? voltage : "Aberto";
-        diodePage.registry_1 = data.section(" ", DiodePage::REGISTRY_1, DiodePage::REGISTRY_1);
-        diodePage.registry_2 = data.section(" ", DiodePage::REGISTRY_2, DiodePage::REGISTRY_2);
-        diodePage.registry_3 = data.section(" ", DiodePage::REGISTRY_3, DiodePage::REGISTRY_3);
-        diodePage.registry_4 = data.section(" ", DiodePage::REGISTRY_4, DiodePage::REGISTRY_4);
-        diodePage.registry_5 = data.section(" ", DiodePage::REGISTRY_5, DiodePage::REGISTRY_5);
-        diodePage.registry_6 = data.section(" ", DiodePage::REGISTRY_6, DiodePage::REGISTRY_6);
+        diodePage.registry_6 = data.section(" ", REGISTRY_6, REGISTRY_6);
+        diodePage.registry_5 = data.section(" ", REGISTRY_5, REGISTRY_5);
+        diodePage.registry_4 = data.section(" ", REGISTRY_4, REGISTRY_4);
+        diodePage.registry_3 = data.section(" ", REGISTRY_3, REGISTRY_3);
+        diodePage.registry_2 = data.section(" ", REGISTRY_2, REGISTRY_2);
+        diodePage.registry_1 = data.section(" ", REGISTRY_1, REGISTRY_1);
 
         qDebug() << "Tensão:" << diodePage.voltageTest;
         qDebug() << "Registro 1:" << diodePage.registry_1;
@@ -184,12 +185,13 @@ void MainWindow::setValuesFromSerial(const QString &data)
         return;
     }
     if (data.startsWith("db")) {
-        chargingUSBPage.current = data.sliced(3).section(" ", ChargingUSBPage::CURRENT, ChargingUSBPage::CURRENT);
-        chargingUSBPage.voltage = data.section(" ", ChargingUSBPage::VOLTAGE, ChargingUSBPage::VOLTAGE);
-        chargingUSBPage.power = data.section(" ", ChargingUSBPage::POWER, ChargingUSBPage::POWER);
-        chargingUSBPage.mAh = data.section(" ", ChargingUSBPage::MAH, ChargingUSBPage::MAH);
-        chargingUSBPage.mWh = data.section(" ", ChargingUSBPage::MWH, ChargingUSBPage::MWH);
-        chargingUSBPage.hour = data.section(" ", ChargingUSBPage::HOUR, ChargingUSBPage::HOUR);
+        using enum ChargingUSBPage::Position;
+        chargingUSBPage.current = data.sliced(3).section(" ", CURRENT, CURRENT);
+        chargingUSBPage.voltage = data.section(" ", VOLTAGE, VOLTAGE);
+        chargingUSBPage.power = data.section(" ", POWER, POWER);
+        chargingUSBPage.mAh = data.section(" ", MAH, MAH);
+        chargingUSBPage.mWh = data.section(" ", MWH, MWH);
+        chargingUSBPage.hour = data.section(" ", HOUR, HOUR);
 
         qDebug() << "Corrente:" << chargingUSBPage.current;
         qDebug() << "Tensão:" << chargingUSBPage.voltage;
@@ -208,8 +210,9 @@ void MainWindow::setValuesFromSerial(const QString &data)
         return;
     }
     if (data.startsWith("qc")) {
-        curveHistoryPage.current = data.sliced(3).section(" ", CurveHistoryPage::CURRENT, CurveHistoryPage::CURRENT);
-        curveHistoryPage.voltage = data.section(" ", CurveHistoryPage::VOLTAGE, CurveHistoryPage::VOLTAGE);
+        using enum CurveHistoryPage::Position;
+        curveHistoryPage.current = data.sliced(3).section(" ", CURRENT, CURRENT);
+        curveHistoryPage.voltage = data.section(" ", VOLTAGE, VOLTAGE);
 
         qDebug() << "Corrente:" << curveHistoryPage.current;
         qDebug() << "Tensão:" << curveHistoryPage.voltage;
