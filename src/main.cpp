@@ -1,9 +1,5 @@
 #include "mainWindow.h"
-#include <QApplication>
-#include <QFileOpenEvent>
-#include <QMainWindow>
 #include <QSettings>
-#include <QString>
 
 int main(int argc, char *argv[])
 {

@@ -3,10 +3,6 @@
 #include <QObject>
 #include <QSerialPort>
 #include <QSerialPortInfo>
-#include <QStringView>
-#include <QTimer>
-#include <QVariant>
-#include <memory>
 
 enum class BaudRateValues : qint32 { BAUD_9600 = 9600, BAUD_19200 = 19200, BAUD_38400 = 38400, BAUD_115200 = 115200, BAUD_230400 = 230400 };
 

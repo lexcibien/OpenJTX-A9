@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QComboBox>
-#include <qcombobox.h>
 
 class PortComboBox : public QComboBox
 {

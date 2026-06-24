@@ -1,38 +1,15 @@
 #include "mainWindow.h"
 #include "ComboBoxHelper.h"
-#include "PortComboBox.h"
-#include "SerialManager.h"
-#include "types.h"
-#include "ui_MainWindow.h"
-#include <QSerialPortInfo>
-#include <algorithm>
-#include <memory>
 
 constexpr float OPEN_VOLTAGE_THRS = 2.8F;
-constexpr float MAX_A9_READ_VOLTAGE = 20.0;
-constexpr float MAX_A9_READ_CURRENT = 2.5;
-constexpr float RANGE_TIME_VOLTAGE_GEAR = 20.0;
-constexpr float RANGE_TIME_CURVE = 10.0;
-constexpr double MS_TO_SECONDS = 1000.0;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(std::make_shared<Ui::MainWindow>())
     , serialWorker(std::make_unique<SerialManager>())
-    , chartCurvePage(new QChart())
-    , voltageSeries(new QLineSeries())
-    , currentSeries(new QLineSeries())
-    , axisXCurveTime(new QValueAxis())
-    , axisYVoltage(new QValueAxis())
-    , axisYCurrent(new QValueAxis())
-    , chartVoltageGearPage(new QChart())
-    , voltageGearSeries(new QLineSeries())
-    , axisXVoltageGearTime(new QValueAxis())
-    , axisYVoltageGear(new QValueAxis())
 {
     ui->setupUi(this);
 
-    graphTimer.start();
     createComboPorts();
     createComboBaudRate();
     connectButtons();
@@ -102,11 +79,8 @@ void MainWindow::comboPorts(int index)
 
 void MainWindow::configureWidgets() const
 {
-    ui->voltageGaugeWidget->setRange(0.0, MAX_A9_READ_VOLTAGE);
-    ui->currentGaugeWidget->setRange(0.0, MAX_A9_READ_CURRENT);
-
-    configureCurveGraph();
-    configureVoltageGearGraph();
+    curveHistoryTab.configureGraph(ui.get());
+    voltageTab.configureGraph(ui.get());
 }
 
 void MainWindow::connectButtons() const
@@ -128,24 +102,12 @@ void MainWindow::setValuesFromSerial(const QString &data)
 {
 
     if (data.startsWith("dv")) {
-        double time = static_cast<double>(graphTimer.elapsed()) / MS_TO_SECONDS;
-
         voltagePage.voltage = data.sliced(3);
 
         qDebug() << "Tensão:" << voltagePage.voltage;
 
-        ui->voltageGearDisplay->setText(voltagePage.voltage);
-
-        voltageGearSeries->append(time, voltagePage.voltage.toDouble());
-
-        axisXVoltageGearTime->setRange(std::max(0.0, time - RANGE_TIME_CURVE), time);
-
-        // set the y range based on max value
-        setAxisRange(voltageGearSeries, axisYVoltageGear);
-
-        while (!voltageGearSeries->points().isEmpty() && voltageGearSeries->points().front().x() < time - RANGE_TIME_CURVE) {
-            voltageGearSeries->removePoints(0, 1);
-        }
+        voltageTab.setState(voltagePage);
+        voltageTab.update(ui.get());
 
         return;
     }
@@ -168,24 +130,8 @@ void MainWindow::setValuesFromSerial(const QString &data)
         qDebug() << "Registro 5:" << diodePage.registry_5;
         qDebug() << "Registro 6:" << diodePage.registry_6;
 
-        //? This might ignore equal values
-        if (diodePage.registry_6 != registry.at(0)) {
-            registry.push_front(diodePage.registry_6);
-        }
-
-        ui->continuityText->setText(diodePage.voltageTest);
-        ui->reg1Display->setText(diodePage.registry_1);
-        ui->reg2Display->setText(diodePage.registry_2);
-        ui->reg3Display->setText(diodePage.registry_3);
-        ui->reg4Display->setText(diodePage.registry_4);
-        ui->reg5Display->setText(diodePage.registry_5);
-        ui->reg6Display->setText(diodePage.registry_6);
-        ui->reg7Display->setText(registry.at(0));
-        ui->reg8Display->setText(registry.at(1));
-        ui->reg9Display->setText(registry.at(2));
-        ui->reg10Display->setText(registry.at(3));
-        ui->reg11Display->setText(registry.at(4));
-        ui->reg12Display->setText(registry.at(5));
+        diodeVoltageTab.setState(diodePage);
+        diodeVoltageTab.update(ui.get());
 
         return;
     }
@@ -205,12 +151,8 @@ void MainWindow::setValuesFromSerial(const QString &data)
         qDebug() << "mWh:" << chargingUSBPage.mWh;
         qDebug() << "Hora:" << chargingUSBPage.hour;
 
-        ui->voltageDisplay->setText(chargingUSBPage.voltage);
-        ui->currentDisplay->setText(chargingUSBPage.current);
-        ui->powerDisplay->setText(chargingUSBPage.power);
-        ui->mAhDisplay->setText(chargingUSBPage.mAh);
-        ui->mWhDisplay->setText(chargingUSBPage.mWh);
-        ui->timeDisplay->setText(chargingUSBPage.hour);
+        chargingUSBTab.setState(chargingUSBPage);
+        chargingUSBTab.update(ui.get());
 
         return;
     }
@@ -222,90 +164,9 @@ void MainWindow::setValuesFromSerial(const QString &data)
         qDebug() << "Corrente:" << curveHistoryPage.current;
         qDebug() << "Tensão:" << curveHistoryPage.voltage;
 
-        ui->voltageGaugeWidget->setValue(curveHistoryPage.voltage.toDouble());
-        ui->currentGaugeWidget->setValue(curveHistoryPage.current.toDouble());
-
-        double time = static_cast<double>(graphTimer.elapsed()) / MS_TO_SECONDS;
-
-        voltageSeries->append(time, curveHistoryPage.voltage.toDouble());
-        currentSeries->append(time, curveHistoryPage.current.toDouble());
-
-        setAxisRange(currentSeries, axisYCurrent);
-        setAxisRange(voltageSeries, axisYVoltage);
-        axisXCurveTime->setRange(std::max(0.0, time - RANGE_TIME_CURVE), time);
-
-        while (!voltageSeries->points().isEmpty() && voltageSeries->points().front().x() < time - RANGE_TIME_CURVE) {
-            voltageSeries->removePoints(0, 1);
-        }
-
-        while (!currentSeries->points().isEmpty() && currentSeries->points().front().x() < time - RANGE_TIME_CURVE) {
-            currentSeries->removePoints(0, 1);
-        }
+        curveHistoryTab.setState(curveHistoryPage);
+        curveHistoryTab.update(ui.get());
 
         return;
     }
-}
-
-void MainWindow::setAxisRange(const QLineSeries *series, QValueAxis *axis)
-{
-    if (QList<QPointF> points = series->points(); !points.isEmpty()) {
-        auto maxPoint = std::ranges::max_element(points, [](const QPointF &point1, const QPointF &point2) { return point1.y() < point2.y(); });
-        qreal maxRealValue = maxPoint->y();
-        axis->setRange(0, static_cast<int>(maxRealValue + 1));
-    }
-}
-
-void MainWindow::configureCurveGraph() const
-{
-    voltageSeries->setName("Tensão");
-    currentSeries->setName("Corrente");
-
-    voltageSeries->setColor(Qt::green);
-    currentSeries->setColor(Qt::red);
-
-    chartCurvePage->addSeries(voltageSeries);
-    chartCurvePage->addSeries(currentSeries);
-
-    axisXCurveTime->setTitleText("Tempo (s)");
-    axisYVoltage->setTitleText("Tensão (V)");
-    axisYCurrent->setTitleText("Corrente");
-
-    axisXCurveTime->setRange(0, RANGE_TIME_CURVE);
-    axisYVoltage->setRange(0, MAX_A9_READ_VOLTAGE);
-    axisYCurrent->setRange(0, MAX_A9_READ_CURRENT);
-
-    chartCurvePage->addAxis(axisXCurveTime, Qt::AlignBottom);
-    chartCurvePage->addAxis(axisYVoltage, Qt::AlignLeft);
-    chartCurvePage->addAxis(axisYCurrent, Qt::AlignRight);
-
-    voltageSeries->attachAxis(axisXCurveTime);
-    voltageSeries->attachAxis(axisYVoltage);
-
-    currentSeries->attachAxis(axisXCurveTime);
-    currentSeries->attachAxis(axisYCurrent);
-
-    ui->curveHistoryGraph->setChart(chartCurvePage);
-}
-
-void MainWindow::configureVoltageGearGraph() const
-{
-    voltageGearSeries->setName("Tensão");
-
-    voltageGearSeries->setColor(Qt::green);
-
-    chartVoltageGearPage->addSeries(voltageGearSeries);
-
-    axisXVoltageGearTime->setTitleText("Tempo (s)");
-    axisYVoltageGear->setTitleText("Tensão (V)");
-
-    axisXVoltageGearTime->setRange(0, RANGE_TIME_VOLTAGE_GEAR);
-    axisYVoltageGear->setRange(0, 1.0);
-
-    chartVoltageGearPage->addAxis(axisXVoltageGearTime, Qt::AlignBottom);
-    chartVoltageGearPage->addAxis(axisYVoltageGear, Qt::AlignLeft);
-
-    voltageGearSeries->attachAxis(axisXVoltageGearTime);
-    voltageGearSeries->attachAxis(axisYVoltageGear);
-
-    ui->voltageGearGraph->setChart(chartVoltageGearPage);
 }

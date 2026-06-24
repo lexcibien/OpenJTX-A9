@@ -1,8 +1,5 @@
 #include "SerialManager.h"
 #include <QDebug>
-#include <QSerialPortInfo>
-#include <QSettings>
-#include <QStringBuilder>
 #include <memory>
 
 SerialManager::SerialManager()
