@@ -17,6 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+// The link for this library can be found at https://www.gnome-look.org/p/1132178
+
 #ifndef QSCALE_H
 #define QSCALE_H
 
