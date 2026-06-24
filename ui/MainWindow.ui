@@ -851,7 +851,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="portComboBox"/>
+           <widget class="PortComboBox" name="portComboBox"/>
           </item>
          </layout>
         </item>
@@ -1010,6 +1010,11 @@
    <extends>QWidget</extends>
    <header>QtCharts/QChartView</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PortComboBox</class>
+   <extends>QComboBox</extends>
+   <header>PortComboBox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

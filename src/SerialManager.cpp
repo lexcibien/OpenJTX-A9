@@ -34,6 +34,7 @@ void SerialManager::connectDevice() //TODO Add ability to connect via VID and PI
         qDebug() << ("Erro ao abrir a porta: " + serial->errorString());
     }
 
+    // emit status(SERIAL::CONNECTED);
     connect(serial.get(), &QSerialPort::readyRead, this, &SerialManager::readSerialData);
 }
 
@@ -43,6 +44,9 @@ void SerialManager::disconnectDevice()
         if (serial->isOpen()) {
             serial->close();
         }
+
+        // emit status(SERIAL::DISCONNECT);
+        // recreate PortComboBox
         serial->disconnect(); // disconnect all signals
         serial.reset();
         serial = nullptr;
@@ -110,6 +114,7 @@ void SerialManager::sendToSerial(const QByteArray &bytes)
         return;
     }
 
+    // emit status(SERIAL::SENDING);
     QString buildDebug;
     buildDebug = "Write to serial -> ";
     foreach (int byt, bytes) {
@@ -125,6 +130,7 @@ void SerialManager::sendToSerial(const QByteArray &bytes)
 
 void SerialManager::readSerialData()
 {
+    // emit status(SERIAL::READING);
     serialBuffer += serial->readAll();
 
     while (serialBuffer.contains('\n'))

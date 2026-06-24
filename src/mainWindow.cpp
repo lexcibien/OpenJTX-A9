@@ -1,5 +1,6 @@
 #include "mainWindow.h"
 #include "ComboBoxHelper.h"
+#include "PortComboBox.h"
 #include "SerialManager.h"
 #include "types.h"
 #include "ui_MainWindow.h"
@@ -104,13 +105,18 @@ void MainWindow::configureWidgets() const
     configureVoltageGearGraph();
 }
 
-void MainWindow::connectButtons() const { connect(ui->connectButton, &QAbstractButton::clicked, this, &MainWindow::changeText); }
+void MainWindow::connectButtons() const
+{
+    connect(ui->connectButton, &QPushButton::clicked, this, &MainWindow::changeText);
+    connect(ui->portComboBox, &PortComboBox::popupOpened, this, &MainWindow::createComboPorts);
+}
 
 void MainWindow::changeText()
 {
     serialWorker->connectDevice();
     connect(serialWorker.get(), &SerialManager::newData, this, &MainWindow::setValuesFromSerial);
 
+    //TODO make it receive from emit status
     ui->connectionText->setText("Conectado");
 }
 
@@ -228,7 +234,7 @@ void MainWindow::setValuesFromSerial(const QString &data)
     }
 }
 
-void MainWindow::setAxisRange(const QLineSeries* series, QValueAxis* axis)
+void MainWindow::setAxisRange(const QLineSeries *series, QValueAxis *axis)
 {
     if (QList<QPointF> points = series->points(); !points.isEmpty()) {
         auto maxPoint = std::ranges::max_element(points, [](const QPointF &point1, const QPointF &point2) { return point1.y() < point2.y(); });
