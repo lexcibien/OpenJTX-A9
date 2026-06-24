@@ -39,7 +39,6 @@ template <typename ValueType> struct Item
     [[nodiscard]] QString text() const { return _text; }
     ValueType value() { return _value; }
 
-
     static void setup(
         QComboBox *comboBox, ValueType defaultValue, const QVector<Item<ValueType>> &list, const std::function<void(ValueType)> &function = { })
     {

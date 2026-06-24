@@ -7,7 +7,7 @@ SerialManager::SerialManager()
 {
 }
 
-void SerialManager::connectDevice() //TODO Add ability to connect via VID and PID
+void SerialManager::connectDevice() // TODO Add ability to connect via VID and PID
 {
     if (serial != nullptr) {
         disconnectDevice();
@@ -130,8 +130,7 @@ void SerialManager::readSerialData()
     // emit status(SERIAL::READING);
     serialBuffer += serial->readAll();
 
-    while (serialBuffer.contains('\n'))
-    {
+    while (serialBuffer.contains('\n')) {
         qsizetype pos = serialBuffer.indexOf('\n');
 
         QByteArray line = serialBuffer.left(pos);

@@ -53,10 +53,7 @@ struct ChargingUSBPage
 
 struct CurveHistoryPage
 {
-    enum Position : uint8_t {
-        CURRENT,
-        VOLTAGE
-    };
+    enum Position : uint8_t { CURRENT, VOLTAGE };
     QString pageName = "qc";
     QString current = "0.0000";
     QString voltage = "0.0000";
