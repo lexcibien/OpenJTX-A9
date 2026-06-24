@@ -43,12 +43,12 @@ struct ChargingUSBPage
         HOUR,
     };
     QString pageName = "db";
-    QString current = "0.0000"; // 60 Hz  0000.000000
+    QString current = "0.0000";
     QString voltage = "0.0000";
     QString power = "0.0000";
-    QString mAh = "0.0000"; // 1 Hz
+    QString mAh = "0.0000";
     QString mWh = "0.0000";
-    QString hour = "000:00:00"; // HHH:mm:ss
+    QString hour = "000:00:00";
 };
 
 struct CurveHistoryPage

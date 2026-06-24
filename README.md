@@ -32,3 +32,8 @@ Driver macOS: <https://www.wch-ic.com/downloads/CH341SER_MAC_ZIP.html>
   load:0x403cc700,len:0x2a80
   entry 0x403c98d0
 ```
+
+### Serial Message specification
+
+Send Rate: 60 Hz
+Basic signal value: 0000.000000
