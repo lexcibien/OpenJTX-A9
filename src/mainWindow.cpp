@@ -168,6 +168,7 @@ void MainWindow::setValuesFromSerial(const QString &data)
         qDebug() << "Registro 5:" << diodePage.registry_5;
         qDebug() << "Registro 6:" << diodePage.registry_6;
 
+        //? This might ignore equal values
         if (diodePage.registry_6 != registry.at(0)) {
             registry.push_front(diodePage.registry_6);
         }
