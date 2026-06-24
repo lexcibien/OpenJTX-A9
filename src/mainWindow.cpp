@@ -42,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::createComboPorts()
 {
+    ui->portComboBox->clear();
+
     QVector<ComboBoxHelper::Item<int>> portsList;
     availablePorts = SerialManager::getPortsList();
 
@@ -55,6 +57,8 @@ void MainWindow::createComboPorts()
 
     if (!portsList.isEmpty()) {
         defaultPort = portsList.first().value();
+    } else {
+        return;
     }
 
     ComboBoxHelper::Item<int>::setup(ui->portComboBox, defaultPort, portsList, this, &MainWindow::comboPorts);
