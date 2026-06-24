@@ -8,21 +8,21 @@
 
 constexpr float MAX_A9_READ_VOLTAGE = 20.0;
 constexpr float MAX_A9_READ_CURRENT = 2.5;
-constexpr float RANGE_TIME_CURVE = 10.0;
 
 class CurveHistoryTab
 {
 private:
+    static constexpr float RANGE_TIME = 10.0;
     static constexpr double MS_TO_SECONDS = 1000.0;
     QElapsedTimer graphTimer;
 
-    QChart *chartCurvePage = new QChart;
+    QChart *chartCurve = new QChart;
     QLineSeries *voltageSeries = new QLineSeries;
     QLineSeries *currentSeries = new QLineSeries;
 
-    QValueAxis *axisXCurveTime = new QValueAxis;
-    QValueAxis *axisYVoltage = new QValueAxis;
-    QValueAxis *axisYCurrent = new QValueAxis;
+    QValueAxis *axisTime = new QValueAxis;
+    QValueAxis *axisVoltage = new QValueAxis;
+    QValueAxis *axisCurrent = new QValueAxis;
 
     CurveHistoryPage curveHistoryPage;
 
@@ -51,28 +51,28 @@ public:
         voltageSeries->setColor(Qt::green);
         currentSeries->setColor(Qt::red);
 
-        chartCurvePage->addSeries(voltageSeries);
-        chartCurvePage->addSeries(currentSeries);
+        chartCurve->addSeries(voltageSeries);
+        chartCurve->addSeries(currentSeries);
 
-        axisXCurveTime->setTitleText("Tempo (s)");
-        axisYVoltage->setTitleText("Tensão (V)");
-        axisYCurrent->setTitleText("Corrente");
+        axisTime->setTitleText("Tempo (s)");
+        axisVoltage->setTitleText("Tensão (V)");
+        axisCurrent->setTitleText("Corrente");
 
-        axisXCurveTime->setRange(0, RANGE_TIME_CURVE);
-        axisYVoltage->setRange(0, MAX_A9_READ_VOLTAGE);
-        axisYCurrent->setRange(0, MAX_A9_READ_CURRENT);
+        axisTime->setRange(0, RANGE_TIME);
+        axisVoltage->setRange(0, MAX_A9_READ_VOLTAGE);
+        axisCurrent->setRange(0, MAX_A9_READ_CURRENT);
 
-        chartCurvePage->addAxis(axisXCurveTime, Qt::AlignBottom);
-        chartCurvePage->addAxis(axisYVoltage, Qt::AlignLeft);
-        chartCurvePage->addAxis(axisYCurrent, Qt::AlignRight);
+        chartCurve->addAxis(axisTime, Qt::AlignBottom);
+        chartCurve->addAxis(axisVoltage, Qt::AlignLeft);
+        chartCurve->addAxis(axisCurrent, Qt::AlignRight);
 
-        voltageSeries->attachAxis(axisXCurveTime);
-        voltageSeries->attachAxis(axisYVoltage);
+        voltageSeries->attachAxis(axisTime);
+        voltageSeries->attachAxis(axisVoltage);
 
-        currentSeries->attachAxis(axisXCurveTime);
-        currentSeries->attachAxis(axisYCurrent);
+        currentSeries->attachAxis(axisTime);
+        currentSeries->attachAxis(axisCurrent);
 
-        uic->curveHistoryGraph->setChart(chartCurvePage);
+        uic->curveHistoryGraph->setChart(chartCurve);
     }
 
     void update(Ui::MainWindow *uic)
@@ -85,15 +85,15 @@ public:
         voltageSeries->append(time, curveHistoryPage.voltage.toDouble());
         currentSeries->append(time, curveHistoryPage.current.toDouble());
 
-        setAxisRange(currentSeries, axisYCurrent);
-        setAxisRange(voltageSeries, axisYVoltage);
-        axisXCurveTime->setRange(std::max(0.0, time - RANGE_TIME_CURVE), time);
+        setAxisRange(currentSeries, axisCurrent);
+        setAxisRange(voltageSeries, axisVoltage);
+        axisTime->setRange(std::max(0.0, time - RANGE_TIME), time);
 
-        while (!voltageSeries->points().isEmpty() && voltageSeries->points().front().x() < time - RANGE_TIME_CURVE) {
+        while (!voltageSeries->points().isEmpty() && voltageSeries->points().front().x() < time - RANGE_TIME) {
             voltageSeries->removePoints(0, 1);
         }
 
-        while (!currentSeries->points().isEmpty() && currentSeries->points().front().x() < time - RANGE_TIME_CURVE) {
+        while (!currentSeries->points().isEmpty() && currentSeries->points().front().x() < time - RANGE_TIME) {
             currentSeries->removePoints(0, 1);
         }
     }

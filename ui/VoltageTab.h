@@ -6,19 +6,18 @@
 #include <QLineSeries>
 #include <QValueAxis>
 
-constexpr float RANGE_TIME_VOLTAGE_GEAR = 20.0;
-
 class VoltageTab
 {
-    private:
+private:
+    static constexpr float RANGE_TIME = 20.0;
     static constexpr double MS_TO_SECONDS = 1000.0;
     QElapsedTimer graphTimer;
 
-    QChart *chartVoltageGearPage = new QChart;
-    QLineSeries *voltageGearSeries = new QLineSeries;
+    QChart *chartVoltage = new QChart;
+    QLineSeries *voltageSeries = new QLineSeries;
 
-    QValueAxis *axisXVoltageGearTime = new QValueAxis;
-    QValueAxis *axisYVoltageGear = new QValueAxis;
+    QValueAxis *axisTime = new QValueAxis;
+    QValueAxis *axisVoltage = new QValueAxis;
 
     VoltagePage voltagePage;
 
@@ -38,25 +37,25 @@ public:
 
     void configureGraph(Ui::MainWindow *uic) const
     {
-        voltageGearSeries->setName("Tensão");
+        voltageSeries->setName("Tensão");
 
-        voltageGearSeries->setColor(Qt::green);
+        voltageSeries->setColor(Qt::green);
 
-        chartVoltageGearPage->addSeries(voltageGearSeries);
+        chartVoltage->addSeries(voltageSeries);
 
-        axisXVoltageGearTime->setTitleText("Tempo (s)");
-        axisYVoltageGear->setTitleText("Tensão (V)");
+        axisTime->setTitleText("Tempo (s)");
+        axisVoltage->setTitleText("Tensão (V)");
 
-        axisXVoltageGearTime->setRange(0, RANGE_TIME_VOLTAGE_GEAR);
-        axisYVoltageGear->setRange(0, 1.0);
+        axisTime->setRange(0, RANGE_TIME);
+        axisVoltage->setRange(0, 1.0);
 
-        chartVoltageGearPage->addAxis(axisXVoltageGearTime, Qt::AlignBottom);
-        chartVoltageGearPage->addAxis(axisYVoltageGear, Qt::AlignLeft);
+        chartVoltage->addAxis(axisTime, Qt::AlignBottom);
+        chartVoltage->addAxis(axisVoltage, Qt::AlignLeft);
 
-        voltageGearSeries->attachAxis(axisXVoltageGearTime);
-        voltageGearSeries->attachAxis(axisYVoltageGear);
+        voltageSeries->attachAxis(axisTime);
+        voltageSeries->attachAxis(axisVoltage);
 
-        uic->voltageGearGraph->setChart(chartVoltageGearPage);
+        uic->voltageGearGraph->setChart(chartVoltage);
     }
 
     void update(Ui::MainWindow *uic)
@@ -65,15 +64,15 @@ public:
 
         uic->voltageGearDisplay->setText(voltagePage.voltage);
 
-        voltageGearSeries->append(time, voltagePage.voltage.toDouble());
+        voltageSeries->append(time, voltagePage.voltage.toDouble());
 
-        axisXVoltageGearTime->setRange(std::max(0.0, time - RANGE_TIME_VOLTAGE_GEAR), time);
+        axisTime->setRange(std::max(0.0, time - RANGE_TIME), time);
 
         // set the y range based on max value
-        setAxisRange(voltageGearSeries, axisYVoltageGear);
+        setAxisRange(voltageSeries, axisVoltage);
 
-        while (!voltageGearSeries->points().isEmpty() && voltageGearSeries->points().front().x() < time - RANGE_TIME_VOLTAGE_GEAR) {
-            voltageGearSeries->removePoints(0, 1);
+        while (!voltageSeries->points().isEmpty() && voltageSeries->points().front().x() < time - RANGE_TIME) {
+            voltageSeries->removePoints(0, 1);
         }
     }
 };
