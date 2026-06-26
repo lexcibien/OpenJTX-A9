@@ -16,6 +16,7 @@ set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(RESOURCE_FILES resources/OpenJTXA9.qrc)
 
 find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Gui Widgets SerialPort Charts)
 
@@ -36,9 +37,32 @@ file(GLOB QSCALE_FILES
 )
 
 qt_add_executable(OpenJTX_A9
+  MACOSX_BUNDLE
+  ${RESOURCE_FILES}
   ${SRC_FILES}
   ${QSCALE_FILES}
 )
+
+if(WIN32)
+  target_sources(OpenJTX_A9 PRIVATE
+    resources/windows/OpenJTXA9.rc
+  )
+endif()
+
+if(APPLE)
+  set(MACOSX_BUNDLE_ICON_FILE OpenJTXA9)
+
+  target_sources(OpenJTX_A9 PRIVATE
+    resources/icons/OpenJTXA9.icns
+  )
+
+  set_source_files_properties(
+    resources/icons/OpenJTXA9.icns
+    PROPERTIES
+    MACOSX_PACKAGE_LOCATION Resources
+  )
+
+endif()
 
 target_include_directories(OpenJTX_A9
   PRIVATE
@@ -55,3 +79,20 @@ target_link_libraries(OpenJTX_A9 PRIVATE
   Qt6::SerialPort
   Qt6::Charts
 )
+
+install(TARGETS OpenJTX_A9
+  BUNDLE DESTINATION .
+  RUNTIME DESTINATION bin
+)
+
+if(UNIX AND NOT APPLE)
+  install(FILES
+    icons/hicolor/scalable/apps/OpenJTXA9.svg
+    DESTINATION share/icons/hicolor/scalable/apps
+  )
+
+  install(FILES
+    resources/linux/OpenJTX_A9.desktop
+    DESTINATION share/applications
+  )
+endif()
