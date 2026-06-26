@@ -2,10 +2,11 @@
 
 #include "SerialManager.h"
 #include "types.h"
-#include <ui/ChargingUSBTab.h>
-#include <ui/CurveHistoryTab.h>
-#include <ui/DiodeVoltageTab.h>
-#include <ui/VoltageTab.h>
+#include "ui_MainWindow.h"
+#include <tabs/ChargingUSBTab.h>
+#include <tabs/CurveHistoryTab.h>
+#include <tabs/DiodeVoltageTab.h>
+#include <tabs/VoltageTab.h>
 
 class MainWindow : public QMainWindow
 {
