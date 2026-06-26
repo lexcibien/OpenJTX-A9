@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1024"
+   height="1024"
+   viewBox="0 0 1024 1024"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
+   sodipodi:docname="open_jtx_a9_icon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="0.71090067"
+     inkscape:cx="395.97656"
+     inkscape:cy="561.25984"
+     inkscape:window-width="1920"
+     inkscape:window-height="1006"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer3" />
+  <defs
+     id="defs1">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect3"
+       is_visible="true"
+       lpeversion="1" />
+  </defs>
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:#000000"
+       d="m 0,1024 c 315.16906,-315.16902 705.84189,-318.15806 1024,0 z"
+       id="path1"
+       sodipodi:nodetypes="ccc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Camada 3">
+    <path
+       style="opacity:1;fill:#4d4d4d;stroke:#4d4d4d;stroke-width:15;stroke-dasharray:none;stroke-opacity:1"
+       d="M 512.91512,1024.3992 213.62563,346.64131 189.45216,291.89917 v 0 l -0.49386,-1.11839 0.49386,1.11839"
+       id="path2"
+       sodipodi:nodetypes="cccccc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Camada 2">
+    <path
+       style="fill:#333333;stroke-width:0.407717"
+       d="M 303.24894,1024 C 431.7487,895.50026 591.03262,894.28157 720.75106,1024 Z"
+       id="path1-3"
+       sodipodi:nodetypes="ccc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Layer 1">
+    <text
+       xml:space="preserve"
+       style="font-size:240px;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;opacity:1;fill:#000000;stroke:none;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
+       id="text3"
+       transform="matrix(0.84916826,0,0,0.84916826,75.962913,-20.184483)"><textPath
+         xlink:href="#path3"
+         startOffset="50%"
+         id="textPath3"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'FantasqueSansM Nerd Font Propo';-inkscape-font-specification:'FantasqueSansM Nerd Font Propo Bold'">Open JTX</textPath></text>
+    <path
+       style="opacity:1;fill:none;stroke:none;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
+       d="M 97.059973,565.42679 C 184.80487,429.4772 343.406,342.19124 505.20691,340.80358 c 161.80091,-1.38765 321.87578,83.16523 411.9395,217.58988 0.94511,1.41063 1.88291,2.82617 2.81333,4.24653"
+       id="path3"
+       inkscape:path-effect="#path-effect3"
+       inkscape:original-d="m 97.059973,565.42679 c 0,0 600.336797,99.77195 820.086437,-7.03333 239.70429,-116.50388 2.81333,4.24653 2.81333,4.24653"
+       transform="matrix(1.24438,0,0,1,-120.77949,36)"
+       sodipodi:nodetypes="csc" />
+  </g>
+</svg>
