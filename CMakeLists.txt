@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 
-project(OpenJTX_A9 VERSION 1.0 LANGUAGES C CXX)
+project(OpenJTX_A9 VERSION 1.0.0 LANGUAGES C CXX)
 
 set(QT_MIN_VERSION 6.4)
 
@@ -94,13 +94,6 @@ qt_generate_deploy_app_script(
 install(SCRIPT ${deploy_script})
 
 if(UNIX AND NOT APPLE)
-  install(FILES
-    icons/hicolor/scalable/apps/OpenJTXA9.svg
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps
-  )
-
-  install(FILES
-    resources/linux/OpenJTX_A9.desktop
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications
-  )
+  install(DIRECTORY icons/hicolor DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons)
+  install(FILES resources/linux/OpenJTX_A9.desktop DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
 endif()
