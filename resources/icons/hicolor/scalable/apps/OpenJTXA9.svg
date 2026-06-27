@@ -1,52 +1,88 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="100%" height="100%" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-    <g id="path1-3" transform="matrix(0.799805,0,0,0.799805,102.5,102.5)">
-        <circle cx="512" cy="512" r="512"/>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1024"
+   height="1024"
+   viewBox="0 0 1024 1024"
+   version="1.1"
+   id="svg1"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <circle
+     style="fill:#000000;fill-opacity:1;stroke-width:12.003"
+     id="path1-3"
+     cx="512"
+     cy="512"
+     r="409.70209" />
+  <g
+     id="layer3">
+    <circle
+       style="fill:#f9f9f9;fill-opacity:1;stroke-width:10.951"
+       id="path1"
+       cx="512"
+       cy="512"
+       r="373.79449" />
+  </g>
+  <g
+     id="layer4">
+    <circle
+       style="display:none;fill:#000000;stroke-width:130.551"
+       id="path4"
+       cx="-566.81122"
+       cy="-463.66394"
+       r="297.22351"
+       transform="rotate(-174.09717)" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:192px;line-height:0;font-family:'FantasqueSansM Nerd Font Mono';-inkscape-font-specification:'FantasqueSansM Nerd Font Mono';letter-spacing:4.5px;writing-mode:lr-tb;direction:ltr;fill:#000000;stroke-width:25"
+       id="text6"
+       transform="matrix(0.80019941,0,0,0.80019941,102.2979,102.2979)"><textPath
+         xlink:href="#path4"
+         id="textPath6"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:192px;line-height:0;font-family:'Noto Sans Mayan Numerals';-inkscape-font-specification:'Noto Sans Mayan Numerals';letter-spacing:4.5px">Open JTX</textPath></text>
+  </g>
+  <g
+     id="layer5">
+    <path
+       style="fill:#000000;fill-opacity:1;stroke-width:12.003;stroke-dasharray:none"
+       d="M 102.2979,512 H 921.7021 C 921.7021,823.80804 512,921.7021 512,921.7021 512,921.7021 102.2979,824.95645 102.2979,512 Z"
+       id="path7" />
+  </g>
+  <text
+     xml:space="preserve"
+     style="font-weight:bold;font-size:213.387px;font-family:'FantasqueSansM Nerd Font Propo';-inkscape-font-specification:'FantasqueSansM Nerd Font Propo Bold';writing-mode:lr-tb;direction:ltr;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:20.005;stroke-dasharray:none;stroke-opacity:1"
+     x="417.71088"
+     y="822.0929"
+     id="text8"><tspan
+       id="tspan8"
+       x="417.71088"
+       y="822.0929"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Seven Segment';-inkscape-font-specification:'Seven Segment';stroke-width:20.005">A9</tspan></text>
+  <g
+     id="layer6">
+    <g
+       id="g4"
+       transform="matrix(0.80019941,0,0,0.80019941,102.2979,102.2979)">
+      <circle
+         style="fill:#666666;stroke-width:25"
+         id="path2"
+         cx="512"
+         cy="591.69482"
+         r="60.499912" />
+      <path
+         style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:15.9147;stroke-dasharray:none;stroke-opacity:1"
+         d="m 491.33559,601.74412 c -0.64325,14.81087 34.50522,20.24389 38.45456,8.39894 139.56975,-659.265289 141.50728,-658.974082 -38.45456,-8.39894 z"
+         id="path8" />
+      <circle
+         style="fill:#333333;stroke-width:18.3154"
+         id="path2-3"
+         cx="512"
+         cy="591.69482"
+         r="44.32325" />
     </g>
-    <g id="path1" transform="matrix(0.799805,0,0,0.799805,102.5,102.5)">
-        <g id="Camada-3" serif:id="Camada 3">
-            <circle id="path11" serif:id="path1" cx="512" cy="512" r="467.127" style="fill:white;"/>
-        </g>
-    </g>
-    <g id="Layer-1" serif:id="Layer 1">
-        <g id="path3" transform="matrix(0.799805,0,0,0.799805,153.594994,168.584648)">
-            <g transform="matrix(0.494412,-0.869228,0.869228,0.494412,-254.854166,305.821905)">
-                <text x="135.464px" y="371.989px" style="font-family:'Arial-BoldMT', 'Arial', sans-serif;font-weight:700;font-size:180px;">O</text>
-            </g>
-            <g transform="matrix(0.723034,-0.690812,0.690812,0.723034,-115.80944,211.590393)">
-                <text x="205.971px" y="250.222px" style="font-family:'Arial-BoldMT', 'Arial', sans-serif;font-weight:700;font-size:180px;">p</text>
-            </g>
-            <g transform="matrix(0.897714,-0.440578,0.440578,0.897714,-47.22921,143.720276)">
-                <text x="285.91px" y="173.576px" style="font-family:'Arial-BoldMT', 'Arial', sans-serif;font-weight:700;font-size:180px;">e</text>
-            </g>
-            <g transform="matrix(0.998668,-0.051606,0.051606,0.998668,-6.098638,19.624395)">
-                <text x="376.97px" y="127.91px" style="font-family:'Arial-BoldMT', 'Arial', sans-serif;font-weight:700;font-size:180px;">n</text>
-            </g>
-            <g transform="matrix(0.885371,0.464885,-0.464885,0.885371,125.275226,-233.710671)">
-                <text x="536.552px" y="137.176px" style="font-family:'Arial-BoldMT', 'Arial', sans-serif;font-weight:700;font-size:180px;">J</text>
-            </g>
-            <g transform="matrix(0.686952,0.726703,-0.726703,0.686952,330.151527,-396.747732)">
-                <text x="625.577px" y="184.829px" style="font-family:'Arial-BoldMT', 'Arial', sans-serif;font-weight:700;font-size:180px;">T</text>
-            </g>
-            <g transform="matrix(0.469715,0.882818,-0.882818,0.469715,606.1582,-478.459095)">
-                <text x="701.348px" y="265.337px" style="font-family:'Arial-BoldMT', 'Arial', sans-serif;font-weight:700;font-size:180px;">X</text>
-            </g>
-        </g>
-    </g>
-    <g id="path8" transform="matrix(0.794423,0.092622,-0.092622,0.794423,144.009548,55.043085)">
-        <g id="Camada-2" serif:id="Camada 2">
-            <path id="path81" serif:id="path8" d="M556.94,123.218L497.245,602.345L535.951,710.751L575.95,602.345L556.94,123.218Z" style="fill:rgb(255,0,0);fill-rule:nonzero;"/>
-        </g>
-    </g>
-    <g id="path7" transform="matrix(0.799805,0,0,0.799805,102.5,102.5)">
-        <g id="Camada-4" serif:id="Camada 4">
-            <path id="path71" serif:id="path7" d="M0,512L1024,512C1024,901.663 512,1024 512,1024C512,1024 0,903.098 0,512Z" style="fill-rule:nonzero;"/>
-        </g>
-    </g>
-    <g id="text8">
-        <g transform="matrix(0.799805,0,0,0.799805,376.616394,778.750483)">
-            <text x="0px" y="0px" style="font-family:'Helvetica-Bold', 'Helvetica';font-weight:700;font-size:266.667px;fill:rgb(255,0,0);">A9</text>
-        </g>
-    </g>
+  </g>
 </svg>

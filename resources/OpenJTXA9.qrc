@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>icons/OpenJTXA9.png</file>
+        <file>icons/OpenJTXA9_ai.png</file>
     </qresource>
 </RCC>

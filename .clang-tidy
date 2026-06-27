@@ -8,5 +8,6 @@ Checks: "*,
   -altera-unroll-loops,
   -altera-struct-pack-align,
   -google-readability-todo,
+  -cppcoreguidelines-owning-memory,
   -cppcoreguidelines-special-member-functions"
 ...

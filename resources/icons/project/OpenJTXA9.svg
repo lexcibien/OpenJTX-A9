@@ -8,8 +8,8 @@
    version="1.1"
    id="svg1"
    inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
-   sodipodi:docname="open_jtx_a9_icon2.svg"
-   inkscape:export-filename="../OpenJTXA9.png"
+   sodipodi:docname="OpenJTXA9.svg"
+   inkscape:export-filename="../hicolor/scalable/apps/OpenJTXA9.svg"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -27,9 +27,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="0.71090067"
-     inkscape:cx="396.67989"
-     inkscape:cy="559.85318"
+     inkscape:zoom="0.46921783"
+     inkscape:cx="651.08353"
+     inkscape:cy="586.08173"
      inkscape:window-width="1920"
      inkscape:window-height="1006"
      inkscape:window-x="0"
@@ -72,11 +72,11 @@
        lpeversion="1" />
   </defs>
   <circle
-     style="fill:#000000;fill-opacity:1;stroke-width:15"
+     style="fill:#000000;fill-opacity:1;stroke-width:12.003"
      id="path1-3"
      cx="512"
      cy="512"
-     r="512" />
+     r="409.70209" />
   <g
      inkscape:label="Camada 1"
      inkscape:groupmode="layer"
@@ -86,63 +86,79 @@
      id="layer3"
      inkscape:label="Camada 3">
     <circle
-       style="fill:#ffffff;fill-opacity:1;stroke-width:13.6854"
+       style="fill:#f9f9f9;fill-opacity:1;stroke-width:10.951"
        id="path1"
        cx="512"
        cy="512"
-       r="467.12668" />
+       r="373.79449" />
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer4"
      inkscape:label="Layer 1">
+    <circle
+       style="display:none;fill:#000000;stroke-width:130.551"
+       id="path4"
+       cx="-566.81122"
+       cy="-463.66394"
+       r="297.22351"
+       transform="rotate(-174.09717)" />
     <text
        xml:space="preserve"
-       style="font-size:240px;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;opacity:1;fill:#000000;stroke:none;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
-       id="text3"
-       transform="matrix(0.84916826,0,0,0.84916826,75.962913,-20.184483)"><textPath
-         xlink:href="#path3"
-         startOffset="50%"
-         id="textPath3"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'FantasqueSansM Nerd Font Propo';-inkscape-font-specification:'FantasqueSansM Nerd Font Propo Bold'">Open JTX</textPath></text>
-    <path
-       style="opacity:1;fill:none;fill-opacity:1;stroke:none;stroke-width:10;stroke-dasharray:none;stroke-opacity:1"
-       d="M 161.78376,751.65761 C 93.429427,642.94993 80.514475,501.28125 128.08514,382.00549 175.6558,262.72973 282.52115,168.83294 406.92591,137.00322 c 124.40476,-31.82972 263.23447,-0.79551 362.24448,80.97669 99.01001,81.7722 155.72162,212.23523 147.97602,340.41355 -4.08787,67.64822 -25.303,134.19349 -61.1234,191.72514"
-       id="path3"
-       inkscape:path-effect="#path-effect3"
-       inkscape:original-d="m 161.78376,751.65761 c 0,0 547.83802,-53.63695 755.36265,-193.26415 91.61989,-61.6439 -61.1234,191.72514 -61.1234,191.72514"
-       transform="matrix(0.9238167,0,0,0.93220365,36.764862,146.08098)"
-       sodipodi:nodetypes="csc" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer2"
-     inkscape:label="Camada 2">
-    <path
-       style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:15.9147;stroke-dasharray:none;stroke-opacity:1"
-       d="M 556.93998,123.2182 493.2449,590.34488 513.95058,712.75137 555.95007,590.34488 Z"
-       id="path8"
-       inkscape:transform-center-x="-0.191552"
-       inkscape:transform-center-y="-206.77994" />
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:192px;line-height:0;font-family:'FantasqueSansM Nerd Font Mono';-inkscape-font-specification:'FantasqueSansM Nerd Font Mono';letter-spacing:4.5px;writing-mode:lr-tb;direction:ltr;fill:#000000;stroke-width:25"
+       id="text6"
+       transform="matrix(0.80019941,0,0,0.80019941,102.2979,102.2979)"><textPath
+         xlink:href="#path4"
+         id="textPath6"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:192px;line-height:0;font-family:'Noto Sans Mayan Numerals';-inkscape-font-specification:'Noto Sans Mayan Numerals';letter-spacing:4.5px">Open JTX</textPath></text>
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer5"
      inkscape:label="Camada 4">
     <path
-       style="fill:#000000;fill-opacity:1;stroke-width:15;stroke-dasharray:none"
-       d="m 0,512 h 1024 c 0,389.66292 -512,512 -512,512 C 512,1024 0,903.09808 0,512 Z"
+       style="fill:#000000;fill-opacity:1;stroke-width:12.003;stroke-dasharray:none"
+       d="M 102.2979,512 H 921.7021 C 921.7021,823.80804 512,921.7021 512,921.7021 512,921.7021 102.2979,824.95645 102.2979,512 Z"
        id="path7"
        sodipodi:nodetypes="cccc" />
   </g>
   <text
      xml:space="preserve"
-     style="font-weight:bold;font-size:266.66666667px;font-family:'FantasqueSansM Nerd Font Propo';-inkscape-font-specification:'FantasqueSansM Nerd Font Propo Bold';writing-mode:lr-tb;direction:ltr;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:25;stroke-dasharray:none;stroke-opacity:1"
-     x="394.16797"
-     y="845.51953"
+     style="font-weight:bold;font-size:213.387px;font-family:'FantasqueSansM Nerd Font Propo';-inkscape-font-specification:'FantasqueSansM Nerd Font Propo Bold';writing-mode:lr-tb;direction:ltr;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:20.005;stroke-dasharray:none;stroke-opacity:1"
+     x="417.71088"
+     y="822.0929"
      id="text8"><tspan
        sodipodi:role="line"
        id="tspan8"
-       x="394.16797"
-       y="845.51953">A9</tspan></text>
+       x="417.71088"
+       y="822.0929"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Seven Segment';-inkscape-font-specification:'Seven Segment';stroke-width:20.005">A9</tspan></text>
+  <g
+     inkscape:groupmode="layer"
+     id="layer6"
+     inkscape:label="Layer 2">
+    <g
+       id="g4"
+       transform="matrix(0.80019941,0,0,0.80019941,102.2979,102.2979)">
+      <circle
+         style="fill:#666666;stroke-width:25"
+         id="path2"
+         cx="512"
+         cy="591.69482"
+         r="60.499912" />
+      <path
+         style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:15.9147;stroke-dasharray:none;stroke-opacity:1"
+         d="m 491.33559,601.74412 c -0.64325,14.81087 34.50522,20.24389 38.45456,8.39894 139.56975,-659.265289 141.50728,-658.974082 -38.45456,-8.39894 z"
+         id="path8"
+         inkscape:transform-center-x="-48.948516"
+         inkscape:transform-center-y="-226.25786"
+         sodipodi:nodetypes="ccc" />
+      <circle
+         style="fill:#333333;stroke-width:18.3154"
+         id="path2-3"
+         cx="512"
+         cy="591.69482"
+         r="44.32325" />
+    </g>
+  </g>
 </svg>
