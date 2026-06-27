@@ -82,17 +82,25 @@ target_link_libraries(OpenJTX_A9 PRIVATE
 
 install(TARGETS OpenJTX_A9
   BUNDLE DESTINATION .
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+qt_generate_deploy_app_script(
+  TARGET OpenJTX_A9
+  OUTPUT_SCRIPT deploy_script
+  NO_UNSUPPORTED_PLATFORM_ERROR
+)
+
+install(SCRIPT ${deploy_script})
 
 if(UNIX AND NOT APPLE)
   install(FILES
     icons/hicolor/scalable/apps/OpenJTXA9.svg
-    DESTINATION share/icons/hicolor/scalable/apps
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps
   )
 
   install(FILES
     resources/linux/OpenJTX_A9.desktop
-    DESTINATION share/applications
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications
   )
 endif()
