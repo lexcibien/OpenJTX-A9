@@ -18,13 +18,24 @@ set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(RESOURCE_FILES resources/OpenJTXA9.qrc)
 
-find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Gui Widgets SerialPort Charts)
+find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Gui Widgets SerialPort Charts LinguistTools)
 
 if(Qt6_VERSION VERSION_LESS ${QT_MIN_VERSION})
   message(FATAL_ERROR "Qt version ${Qt6_VERSION} found, but ${QT_MIN_VERSION} or higher is required")
 endif()
 
-qt_standard_project_setup()
+qt_standard_project_setup(
+  I18N_SOURCE_LANGUAGE pt_BR
+  I18N_TRANSLATED_LANGUAGES en
+)
+
+qt_add_translations(TARGETS OpenJTX_A9
+  QM_OUTPUT_DIRECTORY translations
+  TS_OUTPUT_DIRECTORY translations)
+
+file(GLOB UI_FILES
+  ${CMAKE_AUTOUIC_SEARCH_PATHS}/*.ui
+)
 
 file(GLOB SRC_FILES
   ${SRC_DIR}/*.cpp
@@ -39,6 +50,7 @@ file(GLOB QSCALE_FILES
 qt_add_executable(OpenJTX_A9
   MACOSX_BUNDLE
   ${RESOURCE_FILES}
+  ${UI_FILES}
   ${SRC_FILES}
   ${QSCALE_FILES}
 )
