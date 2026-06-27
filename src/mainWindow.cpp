@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     createComboBaudRate();
     connectButtons();
     configureWidgets();
+    addShortcuts(this);
     SerialManager::listPorts();
 }
 
@@ -169,4 +170,14 @@ void MainWindow::setValuesFromSerial(const QString &data)
 
         return;
     }
+}
+
+void MainWindow::addShortcuts(MainWindow *window)
+{
+    auto *closeApp = new QAction(window);
+    closeApp->setShortcut(QKeySequence("Ctrl+Q"));
+
+    QApplication::connect(closeApp, &QAction::triggered, window, &QApplication::quit);
+
+    window->addAction(closeApp);
 }

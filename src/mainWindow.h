@@ -39,6 +39,8 @@ private:
     void changeText();
     void setValuesFromSerial(const QString &data);
 
+    static void addShortcuts(MainWindow *window);
+
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override = default;
