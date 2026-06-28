@@ -37,6 +37,7 @@ file(GLOB QSCALE_FILES
 )
 
 qt_add_executable(OpenJTX_A9
+  WIN32
   MACOSX_BUNDLE
   ${RESOURCE_FILES}
   ${SRC_FILES}
@@ -44,9 +45,8 @@ qt_add_executable(OpenJTX_A9
 )
 
 if(WIN32)
-  target_sources(OpenJTX_A9 PRIVATE
-    resources/windows/OpenJTXA9.rc
-  )
+  set_target_properties(OpenJTX_A9 PROPERTIES WIN32_EXECUTABLE TRUE)
+  target_sources(OpenJTX_A9 PRIVATE resources/windows/OpenJTXA9.rc)
 endif()
 
 if(APPLE)
