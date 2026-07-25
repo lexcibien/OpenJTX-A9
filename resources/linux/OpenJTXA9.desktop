@@ -1,14 +1,12 @@
 [Desktop Entry]
-Type=Application
-Version=1.0
-
 Name=OpenJTX A9
-Comment=Communication software for JTXTools A9 multimeter
-
 Exec=OpenJTX_A9
 Icon=OpenJTXA9
-
-Terminal=false
-
+Comment=Communication software for JTXTools A9 multimeter
+Comment[pt_BR]=Software de comunicação para multímetro JTXTools A9
+GenericName=Technical tool
+GenericName[pt_BR]=Ferramenta técnica
+Type=Application
+StartupNotify=true
 Categories=Development;Electronics;
 Keywords=multimeter;serial;usb;

@@ -1,4 +1,7 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 4.3)
+
+cmake_policy(SET CMP0207 NEW) # file(GET_RUNTIME_DEPENDENCIES) normalizes paths before matching
+set(CMAKE_POLICY_DEFAULT_CMP0207 NEW)
 
 project(OpenJTX_A9 VERSION 1.0.0 LANGUAGES C CXX)
 
@@ -85,15 +88,17 @@ install(TARGETS OpenJTX_A9
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-qt_generate_deploy_app_script(
-  TARGET OpenJTX_A9
-  OUTPUT_SCRIPT deploy_script
-  NO_UNSUPPORTED_PLATFORM_ERROR
-)
+if(WIN32 OR APPLE)
+  qt_generate_deploy_app_script(
+    TARGET OpenJTX_A9
+    OUTPUT_SCRIPT deploy_script
+    NO_UNSUPPORTED_PLATFORM_ERROR
+  )
 
-install(SCRIPT ${deploy_script})
+  install(SCRIPT ${deploy_script})
+endif()
 
 if(UNIX AND NOT APPLE)
-  install(DIRECTORY icons/hicolor DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons)
-  install(FILES resources/linux/OpenJTX_A9.desktop DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
+  install(DIRECTORY resources/icons/hicolor DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons)
+  install(FILES resources/linux/OpenJTXA9.desktop DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
 endif()

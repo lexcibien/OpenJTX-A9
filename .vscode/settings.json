@@ -4,6 +4,7 @@
     "AUTORCC",
     "AUTOUIC",
     "BINDIR",
+    "Cachy",
     "DATAROOTDIR",
     "JTXA",
     "linux",
@@ -11,6 +12,7 @@
     "qreal",
     "QSCALE",
     "qsizetype",
+    "qtpaths",
     "SPIWP"
   ],
   "editor.codeActionsOnSave": {
