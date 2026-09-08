@@ -1,3 +1,5 @@
+# Program for JTXTools A9 multimeter
+
 cmake_minimum_required(VERSION 4.3)
 
 cmake_policy(SET CMP0207 NEW) # file(GET_RUNTIME_DEPENDENCIES) normalizes paths before matching
@@ -10,6 +12,7 @@ set(QT_MIN_VERSION 6.4)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -27,6 +30,7 @@ if(Qt6_VERSION VERSION_LESS ${QT_MIN_VERSION})
   message(FATAL_ERROR "Qt version ${Qt6_VERSION} found, but ${QT_MIN_VERSION} or higher is required")
 endif()
 
+# Initialize the project
 qt_standard_project_setup()
 
 file(GLOB SRC_FILES
@@ -81,6 +85,12 @@ target_link_libraries(OpenJTX_A9 PRIVATE
   Qt6::Widgets
   Qt6::SerialPort
   Qt6::Charts
+)
+
+add_custom_command(TARGET OpenJTX_A9 POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+  ${CMAKE_BINARY_DIR}/compile_commands.json
+  ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json
 )
 
 install(TARGETS OpenJTX_A9
