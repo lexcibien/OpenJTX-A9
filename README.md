@@ -14,6 +14,12 @@ Alternative open-source software in Qt(multi-platform) for multimeter with bluet
 - Qt6 C++
 - clangd
 
+## Connecting the JTXTools A9 on Linux
+
+On Linux, the serial port may require additional user permissions. See the
+[JTXTools A9 connection guide](docs/JTXTools%20A9.md#linux-serial-port-permissions)
+for how to identify the USB device and configure persistent access.
+
 ## Building
 
 In order to cmake find the qtpaths file you must create a symbolic link or else to the bin path
