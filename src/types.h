@@ -4,6 +4,7 @@
 
 struct DiodePage
 {
+    // NOLINTNEXTLINE(cppcoreguidelines-use-enum-class)
     enum Position : uint8_t {
         VOLTAGE_TEST,
         REGISTRY_6,
@@ -25,6 +26,7 @@ struct DiodePage
 
 struct VoltagePage
 {
+    // NOLINTNEXTLINE(cppcoreguidelines-use-enum-class)
     enum Position : uint8_t {
         VOLTAGE,
     };
@@ -34,6 +36,7 @@ struct VoltagePage
 
 struct ChargingUSBPage
 {
+    // NOLINTNEXTLINE(cppcoreguidelines-use-enum-class)
     enum Position : uint8_t {
         CURRENT,
         VOLTAGE,
@@ -53,6 +56,7 @@ struct ChargingUSBPage
 
 struct CurveHistoryPage
 {
+    // NOLINTNEXTLINE(cppcoreguidelines-use-enum-class)
     enum Position : uint8_t { CURRENT, VOLTAGE };
     QString pageName = "qc";
     QString current = "0.0000";

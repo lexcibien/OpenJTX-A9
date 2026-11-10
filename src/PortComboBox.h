@@ -9,13 +9,12 @@ class PortComboBox : public QComboBox
 public:
     using QComboBox::QComboBox;
 
-signals:
-    void popupOpened();
-
-protected:
     void showPopup() override
     {
         emit popupOpened();
         QComboBox::showPopup();
     }
+
+signals:
+    void popupOpened();
 };

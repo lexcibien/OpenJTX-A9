@@ -45,7 +45,6 @@ void SerialManager::disconnectDevice()
         // emit status(SERIAL::DISCONNECT);
         // recreate PortComboBox
         serial->disconnect(); // disconnect all signals
-        serial.reset();
         serial = nullptr;
     }
 }

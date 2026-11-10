@@ -1,13 +1,11 @@
 ---
-Checks: "*,
+Checks: >-
+  *,
+  -altera-*,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-special-member-functions,
+  -fuchsia-*,
   -llvmlibc-*,
-  -fuchsia-default-arguments-calls,
-  -fuchsia-default-arguments-declarations,
-  -hicpp-special-member-functions,
   -modernize-use-trailing-return-type,
-  -altera-unroll-loops,
-  -altera-struct-pack-align,
-  -google-readability-todo,
-  -cppcoreguidelines-owning-memory,
-  -cppcoreguidelines-special-member-functions"
+  -readability-magic-numbers,
 ...

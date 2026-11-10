@@ -1,12 +1,12 @@
 #pragma once
 
 #include "SerialManager.h"
+#include "tabs/ChargingUSBTab.h"
+#include "tabs/CurveHistoryTab.h"
+#include "tabs/DiodeVoltageTab.h"
+#include "tabs/VoltageTab.h"
 #include "types.h"
 #include "ui_MainWindow.h"
-#include <tabs/ChargingUSBTab.h>
-#include <tabs/CurveHistoryTab.h>
-#include <tabs/DiodeVoltageTab.h>
-#include <tabs/VoltageTab.h>
 
 class MainWindow : public QMainWindow
 {
