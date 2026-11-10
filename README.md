@@ -28,10 +28,18 @@ In order to cmake find the qtpaths file you must create a symbolic link or else 
 sudo ln -s /usr/lib/qt6/bin/qtpaths /usr/bin/qtpaths
 ```
 
-As for other OS should be simple as one command
+As for other OS should be simple as two commands:
+
+Configure:
 
 ```sh
-cmake -B build --config Release
+cmake -S . -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+```
+
+Build:
+
+```sh
+cmake --build build -j$(nproc)
 ```
 
 ## Install
