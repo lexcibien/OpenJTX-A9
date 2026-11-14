@@ -12,7 +12,7 @@ NamespaceIndentation: None
 BreakBeforeBraces: Custom
 BraceWrapping:
   AfterClass: true
-  AfterControlStatement: false
+  AfterControlStatement: Never
   AfterFunction: true
   AfterStruct: true
   BeforeElse: false
