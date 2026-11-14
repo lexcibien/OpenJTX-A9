@@ -10,9 +10,10 @@ Alternative open-source software in Qt(multi-platform) for multimeter with bluet
 
 ## Prerequisites
 
-- CMake version 4.3^
-- Qt6 C++
-- clangd
+- CMake 4.3 or newer
+- Qt 6.4 or newer
+- Ninja
+- clangd (optional, for editor integration)
 
 ## Connecting the JTXTools A9 on Linux
 
@@ -22,30 +23,53 @@ for how to identify the USB device and configure persistent access.
 
 ## Building
 
-In order to cmake find the qtpaths file you must create a symbolic link or else to the bin path
+Configure and build the development preset:
 
 ```sh
-sudo ln -s /usr/lib/qt6/bin/qtpaths /usr/bin/qtpaths
+cmake --preset dev
+cmake --build --preset dev
 ```
 
-As for other OS should be simple as two commands:
-
-Configure:
+If Qt is installed outside the system search paths, provide its installation prefix
+when configuring instead of creating system-wide symbolic links:
 
 ```sh
-cmake -S . -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+cmake --preset dev -DCMAKE_PREFIX_PATH=/path/to/Qt/6.x/compiler
 ```
 
-Build:
+The development compilation database is generated at
+`build/dev/compile_commands.json`.
+
+## Testing
 
 ```sh
-cmake --build build -j$(nproc)
+ctest --preset dev
+```
+
+The test infrastructure is ready for Qt Test targets. Until the first test is
+added, CTest completes successfully without running any tests.
+
+The CI workflow preset configures, builds, and tests in one command:
+
+```sh
+cmake --workflow --preset ci
 ```
 
 ## Install
 
 ```sh
-cmake -S . -B build
-cmake --build build -j$(nproc)
-cmake --install build --prefix "$HOME/.local"
+cmake --preset release
+cmake --build --preset release
+cmake --install build/release --prefix "$HOME/.local"
 ```
+
+## Packaging
+
+After building the release preset, generate a portable package with CPack:
+
+```sh
+cpack --preset release
+```
+
+Packaging produces a ZIP archive on Windows and macOS, and a TGZ archive on
+Linux. Linux packages use the Qt libraries installed on the target system.
