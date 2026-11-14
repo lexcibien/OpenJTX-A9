@@ -114,7 +114,7 @@ void MainWindow::setValuesFromSerial(const QString &data)
     }
     if (data.startsWith("zd")) {
         using enum DiodePage::Position;
-        QString voltage = data.sliced(3).section(" ", VOLTAGE_TEST, VOLTAGE_TEST);
+        const QString voltage = data.sliced(3).section(" ", VOLTAGE_TEST, VOLTAGE_TEST);
         diodePage.voltageTest = voltage.toFloat() < OPEN_VOLTAGE_THRS ? voltage : "Aberto";
         diodePage.registry_6 = data.section(" ", REGISTRY_6, REGISTRY_6);
         diodePage.registry_5 = data.section(" ", REGISTRY_5, REGISTRY_5);

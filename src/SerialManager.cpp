@@ -130,9 +130,8 @@ void SerialManager::readSerialData()
     serialBuffer += serial->readAll();
 
     while (serialBuffer.contains('\n')) {
-        qsizetype pos = serialBuffer.indexOf('\n');
-
-        QByteArray line = serialBuffer.left(pos);
+        const qsizetype pos = serialBuffer.indexOf('\n');
+        const QByteArray line = serialBuffer.left(pos);
 
         serialBuffer.remove(0, pos + 1);
 
