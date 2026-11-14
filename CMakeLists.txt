@@ -2,113 +2,38 @@
 
 cmake_minimum_required(VERSION 4.3)
 
-cmake_policy(SET CMP0207 NEW) # file(GET_RUNTIME_DEPENDENCIES) normalizes paths before matching
+cmake_policy(SET CMP0207 NEW) # Normalize runtime dependency paths before matching.
 set(CMAKE_POLICY_DEFAULT_CMP0207 NEW)
 
 project(OpenJTX_A9 VERSION 1.0.0 LANGUAGES C CXX)
 
-set(QT_MIN_VERSION 6.4)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
+include(CTest)
+include(GNUInstallDirs)
 
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/ui)
-set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+set(OPENJTX_QT_MIN_VERSION 6.4)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(RESOURCE_FILES resources/OpenJTXA9.qrc)
+find_package(Qt6 ${OPENJTX_QT_MIN_VERSION} CONFIG REQUIRED
+  COMPONENTS
+    Charts
+    Core
+    Gui
+    SerialPort
+    Widgets
+)
 
-find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Core Gui Widgets SerialPort Charts)
-
-if(Qt6_VERSION VERSION_LESS ${QT_MIN_VERSION})
-  message(FATAL_ERROR "Qt version ${Qt6_VERSION} found, but ${QT_MIN_VERSION} or higher is required")
-endif()
-
-# Initialize the project
 qt_standard_project_setup()
 
-file(GLOB SRC_FILES
-  ${SRC_DIR}/*.cpp
-  ${SRC_DIR}/*.h
-)
+add_subdirectory(lib/QScale)
+add_subdirectory(src)
 
-file(GLOB QSCALE_FILES
-  ${LIB_DIR}/QScale/*.cpp
-  ${LIB_DIR}/QScale/*.h
-)
-
-qt_add_executable(OpenJTX_A9
-  WIN32
-  MACOSX_BUNDLE
-  ${RESOURCE_FILES}
-  ${SRC_FILES}
-  ${QSCALE_FILES}
-)
-
-if(WIN32)
-  set_target_properties(OpenJTX_A9 PROPERTIES WIN32_EXECUTABLE TRUE)
-  target_sources(OpenJTX_A9 PRIVATE resources/windows/OpenJTXA9.rc)
+if(BUILD_TESTING)
+  add_subdirectory(tests)
 endif()
 
-if(APPLE)
-  set(MACOSX_BUNDLE_ICON_FILE OpenJTXA9)
+include(OpenJTXInstall)
+openjtx_install_target(OpenJTX_A9)
 
-  target_sources(OpenJTX_A9 PRIVATE
-    resources/icons/OpenJTXA9.icns
-  )
-
-  set_source_files_properties(
-    resources/icons/OpenJTXA9.icns
-    PROPERTIES
-    MACOSX_PACKAGE_LOCATION Resources
-  )
-
-endif()
-
-target_include_directories(OpenJTX_A9
-  PRIVATE
-  ${SRC_DIR}
-
-  SYSTEM PRIVATE
-  ${LIB_DIR}/QScale
-)
-
-target_link_libraries(OpenJTX_A9 PRIVATE
-  Qt6::Core
-  Qt6::Gui
-  Qt6::Widgets
-  Qt6::SerialPort
-  Qt6::Charts
-)
-
-add_custom_command(TARGET OpenJTX_A9 POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different
-  ${CMAKE_BINARY_DIR}/compile_commands.json
-  ${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json
-)
-
-install(TARGETS OpenJTX_A9
-  BUNDLE DESTINATION .
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-
-if(WIN32 OR APPLE)
-  qt_generate_deploy_app_script(
-    TARGET OpenJTX_A9
-    OUTPUT_SCRIPT deploy_script
-    NO_UNSUPPORTED_PLATFORM_ERROR
-  )
-
-  install(SCRIPT ${deploy_script})
-endif()
-
-if(UNIX AND NOT APPLE)
-  install(DIRECTORY resources/icons/hicolor DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/icons)
-  install(FILES resources/linux/OpenJTXA9.desktop DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
-endif()
+include(OpenJTXPackaging)
+openjtx_configure_packaging()
