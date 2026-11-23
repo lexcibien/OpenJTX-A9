@@ -34,8 +34,6 @@
 #include <functional>
 #include <optional>
 #include <utility>
-
-namespace {
 constexpr quint8 Station = 1;
 constexpr quint8 ReadRegisters = 3;
 constexpr quint8 WriteRegister = 6;
@@ -50,26 +48,34 @@ constexpr int ReadRecoveryMs = 150;
 constexpr size_t PanelPollReadCount = 4;
 constexpr std::array<std::pair<quint16, quint16>, 5> PanelReads { { { Output, 1 }, { 0x0040, 2 }, { 0x0042, 3 }, { Voltage, 2 }, { 0x0020, 2 } } };
 
-quint16 crc16(const QByteArray &bytes)
+static quint16 crc16(const QByteArray &bytes)
 {
     quint16 crc = 0xFFFF;
-    for (unsigned char byte : bytes) {
+    for (unsigned char const byte : bytes) {
         crc ^= byte;
-        for (int bit = 0; bit < 8; ++bit)
-            crc = (crc >> 1) ^ ((crc & 1) ? 0xA001 : 0);
+        for (int bit = 0; bit < 8; ++bit) {
+            // NOLINTNEXTLINE(bugprone-signed-bitwise)
+            crc = (crc >> 1U) ^ ((crc & 1U) ? 0xA001 : 0);
+        }
     }
     return crc;
 }
 
-quint16 word(const QByteArray &bytes, qsizetype at) { return (quint16(quint8(bytes.at(at))) << 8) | quint8(bytes.at(at + 1)); }
+static quint16 word(const QByteArray &bytes, qsizetype idx)
+{
+    // NOLINTNEXTLINE(bugprone-signed-bitwise)
+    return (static_cast<quint16>(static_cast<quint8>(bytes.at(idx))) << 8) | static_cast<quint8>(bytes.at(idx + 1));
+}
 
+namespace {
 struct Reading
 {
     double volts;
     double amps;
 };
+} // namespace
 
-Reading decodeMeasurement(const QByteArray &frame)
+static Reading decodeMeasurement(const QByteArray &frame)
 {
     // Provisional map. The captured 0x0010–0x0013 response contained four zero words.
     // Change the word indices and divisors here if reference readings show a different
@@ -78,13 +84,15 @@ Reading decodeMeasurement(const QByteArray &frame)
     constexpr qsizetype voltageWord = 0; // 0x0010
     constexpr qsizetype currentWord = 1; // 0x0011
     constexpr qsizetype firstDataByte = 3;
-    return { word(frame, firstDataByte + 2 * voltageWord) / 1000.0, word(frame, firstDataByte + 2 * currentWord) / 1000.0 };
+    return { .volts = word(frame, firstDataByte + (2 * voltageWord)) / 1000.0, .amps = word(frame, firstDataByte + (2 * currentWord)) / 1000.0 };
 }
+
+namespace {
 
 struct NumericControl
 {
-    quint16 address;
-    int scale;
+    quint16 address { };
+    int scale { };
     QDoubleSpinBox *field = nullptr;
     QPushButton *apply = nullptr;
     bool edited = false;
@@ -104,17 +112,24 @@ struct Step
     quint16 current;
     int durationMs;
 };
+} // namespace
 
+namespace {
 class PowerSupplyTab final : public QWidget
 {
 public:
+    // NOLINTNEXTLINE(readability-function-cognitive-complexity)
     explicit PowerSupplyTab(QWidget *parent)
         : QWidget(parent)
-        , table(new QTableWidget(0, 3)), duration(new QSpinBox)
+        , portList(new QComboBox)
+        , measurementInterval(new QComboBox)
+        , table(new QTableWidget(0, 3))
+        , cycles(new QSpinBox)
+        , duration(new QSpinBox)
     {
         auto *layout = new QVBoxLayout(this);
         auto *connection = new QHBoxLayout;
-        portList = new QComboBox;
+
         auto *refresh = new QPushButton(tr("Atualizar portas"));
         connectButton = new QPushButton(tr("Conectar"));
         refreshStateButton = new QPushButton(tr("Consultar estados"));
@@ -124,16 +139,17 @@ public:
         connection->addWidget(refresh);
         connection->addWidget(connectButton);
         connection->addWidget(refreshStateButton);
-        measurementInterval = new QComboBox;
-        for (const int ms : { 100, 250, 500, 750, 1000, 2000, 4000, 6000, 8000, 10000 }) {
-            measurementInterval->addItem(ms < 1000 ? tr("%1 ms").arg(ms) : tr("%1 s").arg(ms / 1000), ms);
+
+        for (const int interval : { 100, 250, 500, 750, 1000, 2000, 4000, 6000, 8000, 10000 }) {
+            measurementInterval->addItem(interval < 1000 ? tr("%1 ms").arg(interval) : tr("%1 s").arg(interval / 1000), interval);
         }
         measurementInterval->setCurrentIndex(measurementInterval->findData(1000));
         connection->addWidget(new QLabel(tr("Intervalo dos gráficos")));
         connection->addWidget(measurementInterval);
         connect(measurementInterval, &QComboBox::currentIndexChanged, this, [this] {
-            if (measurementClock.isValid())
+            if (measurementClock.isValid()) {
                 nextMeasurement = measurementClock.elapsed() + measurementInterval->currentData().toInt();
+            }
             schedulePanelPoll();
         });
         connection->addWidget(status, 1);
@@ -149,10 +165,10 @@ public:
         auto *controls = new QHBoxLayout;
         auto *settings = new QGroupBox(tr("Ajustes"));
         auto *form = new QFormLayout(settings);
-        addNumeric(form, numeric[0], tr("Tensão"), tr(" V"), 32.000, 2);
-        addNumeric(form, numeric[1], tr("Corrente"), tr(" A"), 5.200, 3);
-        addNumeric(form, numeric[2], tr("Limite de sobretensão"), tr(" V"), 33, 2);
-        addNumeric(form, numeric[3], tr("Limite de sobrecorrente"), tr(" A"), 5.3, 3);
+        addNumeric(form, numeric.at(0), tr("Tensão"), tr(" V"), 32.000, 2);
+        addNumeric(form, numeric.at(1), tr("Corrente"), tr(" A"), 5.200, 3);
+        addNumeric(form, numeric.at(2), tr("Limite de sobretensão"), tr(" V"), 33, 2);
+        addNumeric(form, numeric.at(3), tr("Limite de sobrecorrente"), tr(" A"), 5.3, 3);
         auto *switches = new QGroupBox(tr("Saída e proteções"));
         auto *switchLayout = new QVBoxLayout(switches);
         for (auto &control : toggles) {
@@ -172,10 +188,12 @@ public:
                         finishAction(tr("Estados atualizados"));
                         return;
                     }
-                    if (!actionInProgress || !serial.isOpen())
+                    if (!actionInProgress || !serial.isOpen()) {
                         return;
-                    if (control.address == Output && !enable)
+                    }
+                    if (control.address == Output && !enable) {
                         stopSequence();
+                    }
                     writeAndRefresh(control.address, enable);
                 });
             });
@@ -194,7 +212,7 @@ public:
         table->setMaximumHeight(145);
         programLayout->addWidget(table);
         auto *editor = new QHBoxLayout;
-        
+
         duration->setRange(100, 3600000);
         duration->setValue(1000);
         duration->setSuffix(tr(" ms"));
@@ -206,7 +224,7 @@ public:
         editor->addStretch();
         programLayout->addLayout(editor);
         auto *runner = new QHBoxLayout;
-        cycles = new QSpinBox;
+
         cycles->setRange(1, 9999);
         cycles->setValue(10);
         run = new QPushButton(tr("Executar"));
@@ -232,16 +250,17 @@ public:
             [this] { refreshForAction([this] { readMeasurements(tr("Estados e medições atualizados")); }); });
         connect(&serial, &QSerialPort::readyRead, this, [this] { receive(); });
         connect(&serial, &QSerialPort::errorOccurred, this, [this](QSerialPort::SerialPortError error) {
-            if (serial.isOpen() && error == QSerialPort::ResourceError)
+            if (serial.isOpen() && error == QSerialPort::ResourceError) {
                 disconnectSupply(serial.errorString());
+            }
         });
         connect(&timeout, &QTimer::timeout, this, [this] { recoverFromTimeout(); });
         connect(&stepTimer, &QTimer::timeout, this, [this] { advanceSequence(); });
         connect(&runtimeTimer, &QTimer::timeout, this, [this] { showRuntime(); });
         connect(addStep, &QPushButton::clicked, this, [this] {
-            const auto volts = numeric[0].field;
-            const auto amps = numeric[1].field;
-            steps.append({ encode(numeric[0]), encode(numeric[1]), duration->value() });
+            const auto *const volts = numeric.at(0).field;
+            const auto *const amps = numeric.at(1).field;
+            steps.append({ .voltage = encode(numeric.at(0)), .current = encode(numeric.at(1)), .durationMs = duration->value() });
             const int row = table->rowCount();
             table->insertRow(row);
             table->setItem(row, 0, new QTableWidgetItem(volts->cleanText()));
@@ -263,7 +282,7 @@ public:
                 return;
             }
             refreshForAction([this] {
-                if (!toggles[0].state.value_or(false)) {
+                if (!toggles.at(0).state.value_or(false)) {
                     finishAction(tr("Ligue a saída antes de executar a sequência."));
                     return;
                 }
@@ -292,7 +311,7 @@ private:
         std::function<void()> onSuccess;
     };
 
-    static quint16 encode(const NumericControl &control) { return quint16(qRound(control.field->value() * control.scale)); }
+    static quint16 encode(const NumericControl &control) { return static_cast<quint16>(qRound(control.field->value() * control.scale)); }
 
     void addNumeric(QFormLayout *form, NumericControl &control, const QString &name, const QString &unit, double maximum, int decimals)
     {
@@ -317,11 +336,13 @@ private:
     {
         const auto previous = portList->currentData();
         portList->clear();
-        for (const auto &port : QSerialPortInfo::availablePorts())
+        for (const auto &port : QSerialPortInfo::availablePorts()) {
             portList->addItem(port.portName(), port.systemLocation());
+        }
         const int index = portList->findData(previous);
-        if (index >= 0)
+        if (index >= 0) {
             portList->setCurrentIndex(index);
+        }
     }
 
     void toggleConnection()
@@ -352,7 +373,7 @@ private:
 
     void disconnectSupply(const QString &reason)
     {
-        const QString message = reason;
+        const QString &message = reason;
         timeout.stop();
         panelPoll.stop();
         queuedAction = { };
@@ -369,10 +390,12 @@ private:
         currentGauge.scale->setValue(0);
         voltageGauge.label->setText(tr("— V"));
         currentGauge.label->setText(tr("— A"));
-        for (auto &control : toggles)
+        for (auto &control : toggles) {
             control.state.reset();
-        for (auto &control : numeric)
+        }
+        for (auto &control : numeric) {
             control.edited = false;
+        }
         stopSequence();
         status->setText(message);
         updateControls();
@@ -380,15 +403,16 @@ private:
 
     void refreshForAction(std::function<void()> done, bool includeSettings = false)
     {
-        if (!serial.isOpen() || recovering || actionInProgress || (pending && !backgroundRead))
+        if (!serial.isOpen() || recovering || actionInProgress || (pending && !backgroundRead)) {
             return;
+        }
         panelPoll.stop();
         actionInProgress = true;
         status->setText(tr("Consultando a fonte…"));
         updateControls();
 
         if (backgroundRead) {
-            queuedAction = [this, includeSettings, done = std::move(done)]() mutable { readState(0, includeSettings, std::move(done)); };
+            queuedAction = [this, includeSettings, done = std::move(done)] mutable { readState(0, includeSettings, std::move(done)); };
         } else {
             readState(0, includeSettings, std::move(done));
         }
@@ -400,7 +424,7 @@ private:
             done();
             return;
         }
-        const auto [address, count] = PanelReads[index];
+        const auto [address, count] = PanelReads.at(index);
         request(ReadRegisters, address, count, [this, index, includeSettings, done = std::move(done)] {
             afterFrame([this, index, includeSettings, done] { readState(index + 1, includeSettings, done); });
         });
@@ -414,13 +438,14 @@ private:
         }
         const auto due = running ? nextMeasurement : std::min(nextPanel, nextMeasurement);
         const auto delay = std::max<qint64>(10, due - measurementClock.elapsed());
-        panelPoll.start(int(delay));
+        panelPoll.start(static_cast<int>(delay));
     }
 
     void pollPanel()
     {
-        if (!serial.isOpen() || recovering || actionInProgress || pending)
+        if (!serial.isOpen() || recovering || actionInProgress || pending) {
             return;
+        }
 
         const auto now = measurementClock.elapsed();
         if (now < nextMeasurement && (running || now < nextPanel)) {
@@ -432,7 +457,7 @@ private:
         if (now >= nextMeasurement && (running || nextMeasurement <= nextPanel || now < nextPanel)) {
             request(ReadRegisters, MeasurementStart, MeasurementCount, [this] { finishPanelRead(); });
         } else {
-            const auto [address, count] = PanelReads[pollIndex];
+            const auto [address, count] = PanelReads.at(pollIndex);
             pollIndex = (pollIndex + 1) % PanelPollReadCount;
             nextPanel = now + PanelPollIntervalMs;
             request(ReadRegisters, address, count, [this] { finishPanelRead(); });
@@ -446,16 +471,18 @@ private:
             afterFrame(std::move(next));
         } else if (const auto address = std::exchange(deferredSequenceWrite, std::nullopt)) {
             afterFrame([this, address, generation = sequenceGeneration] {
-                if (generation == sequenceGeneration)
+                if (generation == sequenceGeneration) {
                     sequenceWrite(*address);
+                }
             });
         }
     }
 
     void recoverFromTimeout()
     {
-        if (!pending)
+        if (!pending) {
             return;
+        }
         const bool wasBackground = backgroundRead;
         const bool wasWrite = pending->function == WriteRegister;
         pending.reset();
@@ -473,13 +500,15 @@ private:
         // RTU read responses carry no register address. Discard late bytes
         // during a quiet period before issuing a request for another block.
         QTimer::singleShot(ReadRecoveryMs, this, [this, wasBackground, generation = connectionGeneration] {
-            if (!serial.isOpen() || generation != connectionGeneration)
+            if (!serial.isOpen() || generation != connectionGeneration) {
                 return;
+            }
             recovering = false;
-            if (wasBackground)
+            if (wasBackground) {
                 finishPanelRead();
-            else
+            } else {
                 actionInProgress = false;
+            }
             schedulePanelPoll();
             updateControls();
         });
@@ -489,8 +518,9 @@ private:
     void afterFrame(std::function<void()> next)
     {
         QTimer::singleShot(10, this, [this, next = std::move(next), generation = connectionGeneration] {
-            if (serial.isOpen() && generation == connectionGeneration)
+            if (serial.isOpen() && generation == connectionGeneration) {
                 next();
+            }
         });
     }
 
@@ -500,8 +530,9 @@ private:
         backgroundTimeout = false;
         status->setText(message);
         updateControls();
-        if (const auto address = std::exchange(deferredSequenceWrite, std::nullopt))
+        if (const auto address = std::exchange(deferredSequenceWrite, std::nullopt)) {
             sequenceWrite(*address);
+        }
         schedulePanelPoll();
     }
 
@@ -509,8 +540,9 @@ private:
     {
         request(WriteRegister, address, value, [this, address, value] {
             for (auto &control : numeric) {
-                if (control.address == address && encode(control) == value)
+                if (control.address == address && encode(control) == value) {
                     control.edited = false;
+                }
             }
             afterFrame([this] { readState(0, false, [this] { readMeasurements(tr("Comando confirmado. Estados e medições atualizados.")); }); });
         });
@@ -518,23 +550,24 @@ private:
 
     void request(quint8 function, quint16 address, quint16 value, std::function<void()> onSuccess)
     {
-        if (recovering || pending || !serial.isOpen())
+        if (recovering || pending || !serial.isOpen()) {
             return;
+        }
         QByteArray frame;
-        frame.append(char(Station));
-        frame.append(char(function));
-        frame.append(char(address >> 8));
-        frame.append(char(address & 0xFF));
-        frame.append(char(value >> 8));
-        frame.append(char(value & 0xFF));
+        frame.append(static_cast<char>(Station));
+        frame.append(static_cast<char>(function));
+        frame.append(static_cast<char>(address >> 8U));
+        frame.append(static_cast<char>(address & 0xFFU));
+        frame.append(static_cast<char>(value >> 8U));
+        frame.append(static_cast<char>(value & 0xFFU));
         const auto crc = crc16(frame);
-        frame.append(char(crc & 0xFF));
-        frame.append(char(crc >> 8));
+        frame.append(static_cast<char>(crc & 0xFFU));
+        frame.append(static_cast<char>(crc >> 8U));
         if (function == ReadRegisters && address == MeasurementStart) {
             measurementRequestGeneration = chartGeneration;
             nextMeasurement = measurementClock.elapsed() + measurementInterval->currentData().toInt();
         }
-        pending = Request { function, address, value, frame, std::move(onSuccess) };
+        pending = Request { .function = function, .address = address, .value = value, .frame = frame, .onSuccess = std::move(onSuccess) };
         if (serial.write(frame) != frame.size()) {
             disconnectSupply(serial.errorString());
             return;
@@ -543,27 +576,31 @@ private:
         updateControls();
     }
 
+    // NOLINTNEXTLINE(readability-function-cognitive-complexity)
     void receive()
     {
         const auto newBytes = serial.readAll();
-        if (!pending)
+        if (!pending) {
             return;
+        }
         rx += newBytes;
         const Request sent = *pending;
         while (rx.size() >= 2) {
-            const auto function = quint8(rx.at(1));
-            const bool exception = function == (sent.function | 0x80);
-            if (quint8(rx.at(0)) != Station || (!exception && function != sent.function)) {
+            const auto function = static_cast<quint8>(rx.at(1));
+            const bool exception = function == (sent.function | 0x80U);
+            if (static_cast<quint8>(rx.at(0)) != Station || (!exception && function != sent.function)) {
                 rx.remove(0, 1);
                 continue;
             }
-            const int length = exception ? 5 : function == WriteRegister ? 8 : 5 + 2 * sent.value;
-            if (!exception && function == ReadRegisters && rx.size() >= 3 && quint8(rx.at(2)) != 2 * sent.value) {
+            // NOLINTNEXTLINE(readability-avoid-nested-conditional-operator)
+            const int length = exception ? 5 : function == WriteRegister ? 8 : 5 + (2 * sent.value);
+            if (!exception && function == ReadRegisters && rx.size() >= 3 && static_cast<quint8>(rx.at(2)) != 2 * sent.value) {
                 rx.remove(0, 1);
                 continue;
             }
-            if (rx.size() < length)
+            if (rx.size() < length) {
                 return;
+            }
             const auto frame = rx.first(length);
             if (crc16(frame) || (!exception && function == WriteRegister && frame != sent.frame)) {
                 rx.remove(0, 1);
@@ -574,26 +611,31 @@ private:
             timeout.stop();
             if (exception && backgroundRead) {
                 for (auto &control : toggles) {
-                    if (control.address >= sent.address && control.address < sent.address + sent.value)
+                    if (control.address >= sent.address && control.address < sent.address + sent.value) {
                         control.state.reset();
+                    }
                 }
-                if (!actionInProgress)
+                if (!actionInProgress) {
                     status->setText(tr("A fonte recusou uma consulta do painel físico."));
+                }
                 finishPanelRead();
             } else if (exception && sent.function == ReadRegisters && sent.address == MeasurementStart) {
                 finishAction(tr("Estados atualizados. A fonte recusou a leitura de medições."));
             } else if (exception) {
                 stopSequence();
-                for (auto &control : toggles)
+                for (auto &control : toggles) {
                     control.state.reset();
-                finishAction(tr("A fonte recusou o comando (exceção %1).").arg(int(quint8(frame.at(2)))));
+                }
+                finishAction(tr("A fonte recusou o comando (exceção %1).").arg(static_cast<int>(static_cast<quint8>(frame.at(2)))));
             } else {
                 if (function == ReadRegisters && sent.address == MeasurementStart) {
-                    if (measurementRequestGeneration == chartGeneration)
+                    if (measurementRequestGeneration == chartGeneration) {
                         showMeasurement(decodeMeasurement(frame));
+                    }
                 } else if (function == ReadRegisters) {
-                    for (int index = 0; index < sent.value; ++index)
-                        updateValue(sent.address + index, word(frame, 3 + 2 * index));
+                    for (quint16 index = 0; index < sent.value; ++index) {
+                        updateValue(sent.address + index, word(frame, 3 + (2 * index)));
+                    }
                 }
                 if (backgroundTimeout && backgroundRead && !actionInProgress) {
                     backgroundTimeout = false;
@@ -645,9 +687,9 @@ private:
         content->addLayout(gauges, 1);
 
         auto *charts = new QVBoxLayout;
-        charts->addWidget(createPlot(tr("Tensão (V)"), QColor("#2475ba"), 0.1, plots[0]));
-        charts->addWidget(createPlot(tr("Corrente (A)"), QColor("#387d45"), 0.1, plots[1]));
-        charts->addWidget(createPlot(tr("Potência (W)"), QColor("#ad5c26"), 1, plots[2]));
+        charts->addWidget(createPlot(tr("Tensão (V)"), QColor("#2475ba"), 0.1, plots.at(0)));
+        charts->addWidget(createPlot(tr("Corrente (A)"), QColor("#387d45"), 0.1, plots.at(1)));
+        charts->addWidget(createPlot(tr("Potência (W)"), QColor("#ad5c26"), 1, plots.at(2)));
         content->addLayout(charts, 3);
         layout->addLayout(content, 1);
         return page;
@@ -669,7 +711,7 @@ private:
         return box;
     }
 
-    QChartView *createPlot(const QString &title, const QColor &color, double span, Plot &plot)
+    static QChartView *createPlot(const QString &title, const QColor &color, double span, Plot &plot)
     {
         auto *chart = new QChart;
         chart->legend()->hide();
@@ -705,7 +747,7 @@ private:
         ++chartGeneration;
         chartOrigin = measurementClock.isValid() ? measurementClock.elapsed() : 0;
         nextMeasurement = chartOrigin;
-        for (auto &plot : plots) {
+        for (const auto &plot : plots) {
             plot.series->clear();
             plot.time->setRange(0, ChartWindowSeconds);
             plot.value->setRange(0, plot.minimumSpan);
@@ -719,7 +761,7 @@ private:
         voltageGauge.label->setText(tr("%1 V").arg(locale().toString(reading.volts, 'f', 3)));
         currentGauge.label->setText(tr("%1 A").arg(locale().toString(reading.amps, 'f', 3)));
 
-        const double seconds = (measurementClock.elapsed() - chartOrigin) / 1000.0;
+        const double seconds = static_cast<double>(measurementClock.elapsed() - chartOrigin) / 1000.0;
         const double end = std::max(ChartWindowSeconds, seconds);
         const double start = end - ChartWindowSeconds;
         // Power is calculated from simultaneous voltage/current samples. If a
@@ -727,21 +769,23 @@ private:
         // and use that value here instead of the product.
         const std::array values { reading.volts, reading.amps, reading.volts * reading.amps };
         for (size_t index = 0; index < plots.size(); ++index) {
-            auto &plot = plots[index];
-            plot.series->append(seconds, values[index]);
+            const auto &plot = plots.at(index);
+            plot.series->append(seconds, values.at(index));
             const auto points = plot.series->points();
             const auto firstVisible
                 = std::lower_bound(points.cbegin(), points.cend(), start, [](const QPointF &point, double left) { return point.x() < left; });
             // Keep one point outside the viewport so a segment crossing its left edge stays visible.
             const auto firstRetained = firstVisible == points.cbegin() ? firstVisible : firstVisible - 1;
             const auto removeCount = firstRetained - points.cbegin();
-            if (removeCount > 0)
-                plot.series->removePoints(0, int(removeCount));
+            if (removeCount > 0) {
+                plot.series->removePoints(0, static_cast<int>(removeCount));
+            }
             plot.time->setRange(start, end);
 
             double maximum = plot.minimumSpan;
-            for (auto point = firstRetained; point != points.cend(); ++point)
+            for (auto point = firstRetained; point != points.cend(); ++point) {
                 maximum = std::max(maximum, point->y() * 1.1);
+            }
             plot.value->setRange(0, maximum);
         }
     }
@@ -749,22 +793,28 @@ private:
     void updateValue(quint16 address, quint16 value)
     {
         for (auto &control : toggles) {
-            if (control.address == address)
+            if (control.address == address) {
                 control.state = value == 0 || value == 1 ? std::optional<bool>(value == 1) : std::nullopt;
+            }
         }
-        if (address == Output && value != 1 && running)
+        if (address == Output && value != 1 && running) {
             stopSequence();
-        for (auto &control : numeric) {
+        }
+        for (auto const &control : numeric) {
             if (control.address == address && !control.edited) {
                 // Reads track physical encoders while leaving pending user edits intact.
                 const QSignalBlocker blocker(control.field);
-                if (encode(control) != value)
-                    control.field->setValue(double(value) / control.scale);
+                if (encode(control) != value) {
+                    control.field->setValue(static_cast<double>(value) / control.scale);
+                }
             }
         }
     }
 
-    bool canRun() const { return serial.isOpen() && !recovering && (!pending || backgroundRead) && !actionInProgress && !steps.isEmpty(); }
+    [[nodiscard]] bool canRun() const
+    {
+        return serial.isOpen() && !recovering && (!pending || backgroundRead) && !actionInProgress && !steps.isEmpty();
+    }
 
     void updateControls()
     {
@@ -773,9 +823,11 @@ private:
         refreshStateButton->setEnabled(ready);
         portList->setEnabled(!open);
         connectButton->setText(open ? tr("Desconectar") : tr("Conectar"));
-        for (const auto &control : numeric)
+        for (const auto &control : numeric) {
             control.apply->setEnabled(ready && !running);
+        }
         for (const auto &control : toggles) {
+            // NOLINTNEXTLINE(readability-avoid-nested-conditional-operator)
             const auto state = !control.state ? tr("desconhecido") : *control.state ? tr("ligado") : tr("desligado");
             control.button->setText(tr("%1 (%2)").arg(tr(control.name), state));
             control.button->setEnabled(ready);
@@ -792,20 +844,23 @@ private:
 
     void sequenceWrite(quint16 address)
     {
-        if (!running)
+        if (!running) {
             return;
+        }
         if (actionInProgress || backgroundRead || recovering) {
             deferredSequenceWrite = address;
             return;
         }
         const auto &step = steps.at(stepIndex);
         request(WriteRegister, address, address == Voltage ? step.voltage : step.current, [this, address, generation = sequenceGeneration] {
-            if (!running || generation != sequenceGeneration)
+            if (!running || generation != sequenceGeneration) {
                 return;
+            }
             if (address == Voltage) {
                 afterFrame([this, generation] {
-                    if (generation == sequenceGeneration)
+                    if (generation == sequenceGeneration) {
                         sequenceWrite(Current);
+                    }
                 });
             } else {
                 stepTimer.start(steps.at(stepIndex).durationMs);
@@ -837,8 +892,9 @@ private:
 
     void stopSequence()
     {
-        if (running)
+        if (running) {
             showRuntime();
+        }
         running = false;
         ++sequenceGeneration;
         deferredSequenceWrite.reset();
@@ -890,10 +946,25 @@ private:
     int remainingCycles = 0;
     unsigned sequenceGeneration = 0;
     bool running = false;
-    std::array<NumericControl, 4> numeric { { { Voltage, 100 }, { Current, 1000 }, { 0x0020, 100 }, { 0x0021, 1000 } } };
-    std::array<SwitchControl, 6> toggles { { { Output, "Saída" }, { 0x0040, "Bloqueio" }, { 0x0041, "Bipe" }, { 0x0042, "OVP" }, { 0x0043, "OCP" },
-        { 0x0044, "OPP" } } };
+    std::array<NumericControl, 4> numeric {
+        {
+            { .address = Voltage, .scale = 100 },
+            { .address = Current, .scale = 1000 },
+            { .address = 0x0020, .scale = 100 },
+            { .address = 0x0021, .scale = 1000 },
+        },
+    };
+    std::array<SwitchControl, 6> toggles {
+        {
+            { .address = Output, .name = "Saída" },
+            { .address = 0x0040, .name = "Bloqueio" },
+            { .address = 0x0041, .name = "Bipe" },
+            { .address = 0x0042, .name = "OVP" },
+            { .address = 0x0043, .name = "OCP" },
+            { .address = 0x0044, .name = "OPP" },
+        },
+    };
 };
-}
+} // namespace
 
 QWidget *createPowerSupplyTab(QWidget *parent) { return new PowerSupplyTab(parent); }

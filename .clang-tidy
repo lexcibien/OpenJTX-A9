@@ -9,4 +9,7 @@ Checks: >-
   -modernize-use-trailing-return-type,
   -readability-magic-numbers,
   -cppcoreguidelines-owning-memory,
+  -misc-use-anonymous-namespace,
+  -readability-implicit-bool-conversion,
+  -bugprone-easily-swappable-parameters,
 ...

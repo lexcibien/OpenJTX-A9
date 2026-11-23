@@ -29,8 +29,8 @@ private:
     static void setAxisRange(const QLineSeries *series, QValueAxis *axis)
     {
         if (QList<QPointF> points = series->points(); !points.isEmpty()) {
-            auto maxPoint = std::ranges::max_element(points, [](const QPointF &point1, const QPointF &point2) { return point1.y() < point2.y(); });
-            qreal maxRealValue = maxPoint->y();
+            const auto maxPoint = std::ranges::max_element(points, [](const QPointF &point1, const QPointF &point2) { return point1.y() < point2.y(); });
+            const qreal maxRealValue = maxPoint->y();
             axis->setRange(0, static_cast<int>(maxRealValue + 1));
         }
     }
