@@ -140,10 +140,10 @@ public:
         connection->addWidget(connectButton);
         connection->addWidget(refreshStateButton);
 
-        for (const int interval : { 100, 250, 500, 750, 1000, 2000, 4000, 6000, 8000, 10000 }) {
+        for (const int interval : { 25, 50, 75, 100, 500, 1000, 5000, 6000, 8000, 10000 }) {
             measurementInterval->addItem(interval < 1000 ? tr("%1 ms").arg(interval) : tr("%1 s").arg(interval / 1000), interval);
         }
-        measurementInterval->setCurrentIndex(measurementInterval->findData(1000));
+        measurementInterval->setCurrentIndex(measurementInterval->findData(100));
         connection->addWidget(new QLabel(tr("Intervalo dos gráficos")));
         connection->addWidget(measurementInterval);
         connect(measurementInterval, &QComboBox::currentIndexChanged, this, [this] {
