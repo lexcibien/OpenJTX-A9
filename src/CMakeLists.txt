@@ -3,6 +3,8 @@ qt_add_executable(OpenJTX_A9
   MACOSX_BUNDLE
   ComboBoxHelper.h
   PortComboBox.h
+  PowerSupplyTab.cpp
+  PowerSupplyTab.h
   SerialManager.cpp
   SerialManager.h
   main.cpp

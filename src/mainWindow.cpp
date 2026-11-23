@@ -1,5 +1,6 @@
 #include "mainWindow.h"
 #include "ComboBoxHelper.h"
+#include "PowerSupplyTab.h"
 
 constexpr float OPEN_VOLTAGE_THRS = 2.8F;
 
@@ -9,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     , serialWorker(std::make_unique<SerialManager>())
 {
     ui->setupUi(this);
+    ui->tabWidget->addTab(createPowerSupplyTab(ui->tabWidget), tr("Fonte DC3005"));
 
     createComboPorts();
     createComboBaudRate();
