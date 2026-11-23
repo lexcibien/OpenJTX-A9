@@ -25,6 +25,8 @@ find_package(Qt6 ${OPENJTX_QT_MIN_VERSION} CONFIG REQUIRED
 
 qt_standard_project_setup()
 
+option(OPENJTX_DEPLOY_WINDOWS_RUNTIME "Deploy the Qt runtime to the Windows build directory" OFF)
+
 add_subdirectory(lib/QScale)
 add_subdirectory(src)
 

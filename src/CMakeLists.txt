@@ -45,3 +45,20 @@ target_link_libraries(OpenJTX_A9
 
 include(OpenJTXPlatform)
 openjtx_configure_platform_assets(OpenJTX_A9)
+
+if(WIN32 AND OPENJTX_DEPLOY_WINDOWS_RUNTIME)
+  if(TARGET Qt6::windeployqt)
+    set(windeployqt "$<TARGET_FILE:Qt6::windeployqt>")
+  else()
+    set(windeployqt "$<TARGET_FILE_DIR:Qt6::qmake>/windeployqt.exe")
+  endif()
+
+  add_custom_target(OpenJTX_A9_runtime ALL
+    COMMAND "${windeployqt}"
+      --dir "$<TARGET_FILE_DIR:OpenJTX_A9>"
+      "$<TARGET_FILE:OpenJTX_A9>"
+    DEPENDS OpenJTX_A9
+    COMMENT "Deploying the Qt runtime for OpenJTX_A9"
+    VERBATIM
+  )
+endif()

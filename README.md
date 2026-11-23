@@ -12,6 +12,7 @@ Alternative open-source software in Qt(multi-platform) for multimeter with bluet
 
 - CMake 4.3 or newer
 - Qt 6.4 or newer
+- MSVC 2022 (for Windows)
 - Ninja
 - clangd (optional, for editor integration)
 
@@ -22,6 +23,18 @@ On Linux, the serial port may require additional user permissions. See the
 for how to identify the USB device and configure persistent access.
 
 ## Building
+
+On Windows, first you need to enter on the terminal MSVC 2022. Also you can do this on a powershell 7 terminal:
+
+```sh
+$vs = 'path\to\your\Microsoft Visual Studio\version\Community'
+$env:OPENJTX_VSDEV = "$vs\Common7\Tools\VsDevCmd.bat"
+$env:Path = "$vs\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja;$env:Path"
+$env:CMAKE_PREFIX_PATH = 'path\to\your\Qt\version\msvc2022_64'
+cmd.exe /d /c 'call "%OPENJTX_VSDEV%" -arch=amd64 -host_arch=amd64 && pwsh -NoLogo'
+```
+
+Make sure you change to your path
 
 Configure and build the development preset:
 
@@ -56,6 +69,17 @@ cmake --workflow --preset ci
 ```
 
 ## Install
+
+On Windows, build the release preset and run the executable from the build
+directory. The build copies the Qt DLLs and plugins next to the application.
+
+```sh
+cmake --preset release
+cmake --build --preset release
+.\build\release\OpenJTX_A9.exe
+```
+
+To install to a separate location:
 
 ```sh
 cmake --preset release

@@ -8,4 +8,5 @@ Checks: >-
   -llvmlibc-*,
   -modernize-use-trailing-return-type,
   -readability-magic-numbers,
+  -cppcoreguidelines-owning-memory,
 ...

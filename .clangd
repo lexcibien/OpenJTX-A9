@@ -3,6 +3,8 @@ Diagnostics:
     FastCheckFilter: None
   Includes:
     AnalyzeAngledIncludes: false
+CompileFlags:
+  CompilationDatabase: build/release
 
 Index:
   StandardLibrary: false
